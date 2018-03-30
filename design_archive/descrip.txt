@@ -1,0 +1,60 @@
+legend:
+-|---- or ----|- means exactly one
+-|0--- or ---0|- means zero or one
+>----- or -----< means many (i.e., one or more)
+>0---- or ----0< means zero or one or many
+
+source -|----0< hypothesis >0----|-
+(persona_rel OR persona OR persona_attrib OR role OR event OR event_rel)
+
+From a source, we extract many hypotheses. A hypothesis is a
+statement of genealogical information about a persona, an event,
+a relation between them, or a persona's attribute. Several hypotheses
+may refer to the same one persona, event, or relation.
+Since the research project one is engaged in my itself during
+the creation of this database may itself be referenced by another
+genealogist in the future, thereby making this database a
+"source" for that other genealogist; we store our own
+hypotheses (derived from both the research we do and from our
+own logical guesswork) in the same hypotheses table, and we
+link those records to a source record that indicates the
+research project we are engaged in.
+
+
+
+persona -|----0< persona_rel >0----|- persona
+
+A persona_rel record will relate two persona.
+
+persona -|----0< role >0----|- event
+event -|----0< event_rel >0----|- event
+persona -|----0< persona_attrib -|0--0|- event
+
+
+source -|----0< rep_source >0----|- representation
+(equavalent to source 0:n-to-0:n representation)
+
+source -|----0< source_group >0----|- source
+(equavalent to source 0:n-to-0:n source)
+A way of grouping together various source items.
+
+source >0----|- place
+source >0----|- dt (date)
+
+hypothesis -|----0< assert_search >0----|- search -|----0< search_in_source >0----|- source
+(equavalent to hypothesis 0:n-to-0:n search 0:n-to-0:n source)
+an hypothesis can lead to searches: a way to indicate searches to be performed
+based on hypotheses
+searches are done (or to be done) in sources
+
+hypothesis -|----0< reference >0----|- hypothesis
+
+event >0----|- place
+event 0:n-to-0:2 dt (date/range)
+
+??? source_group >0----|- source_group_type
+reference >0----|- reference_type
+event >0----|- event_type
+event_rel >0----|- event_rel_type
+role >0----|- role_type
+persona_rel >0----|- persona_rel_type

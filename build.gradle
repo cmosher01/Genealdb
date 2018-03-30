@@ -1,0 +1,18 @@
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://mosher.mine.nu/nexus/repository/maven-public/'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+dependencies {
+    implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
+    implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
+}
+
+group = 'nu.mine.mosher.gedcom'
+version = '1.0.0-SNAPSHOT'
+mainClassName = 'nu.mine.mosher.genealdb.Genaldb'

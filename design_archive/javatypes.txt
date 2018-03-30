@@ -1,0 +1,69 @@
+DateRange
+	y,m,d,y2,m2,d2,h,m,circa,calendar
+
+Place
+	name,rRelation
+RelationToPlace
+RelationTypePlace
+
+
+
+(Types are enums with names)
+EventType
+RoleType
+ReferenceType
+
+
+
+Relation
+	fkx_A
+	fkx_B
+	fkt_AB_RelationType
+
+
+Source
+	auth,titl,writtenDateRange,writtenPlace,publisher,rRepresentation,rSearch,rRelation
+RelationToSource
+RelationTypeSource
+Representation
+	transcript,extern,bin,notes,rSource
+Search
+	description
+	rHypothesis
+	rSource
+
+
+
+Assertable:
+Persona
+	name
+	rRelation
+	rHypothesis
+PersonaRelation
+RelationTypePersona
+Event
+	startDateRange
+	endDateRange
+	place
+	rRelation
+	rHypothesis
+	type
+
+EventRelation
+RelationTypeEvent
+Role
+	persona
+	event
+	type
+
+
+
+
+Hypothesis
+	assertable
+	rationale
+	source
+	bAffirmed
+	rRelation
+RelationToHypothesis
+RelationTypeHypothesis

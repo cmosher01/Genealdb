@@ -1,0 +1,33 @@
+source -> assertion
+
+
+
+source ->
+photo ->
+extraction/transcription ->
+translation ->
+evidence ->
+extraction ->
+assertion (direct) ->
+assertion (conclusional)
+
+
+
+assertions are knowledge about:
+
+person
+attribute
+event
+place
+date
+
+person has attribute
+person has-role-in event
+person is-related-to person
+event is-related-to event
+event has place
+event has date
+
+
+assertions come-from sources
+assertions are-based-on assertions

@@ -1,0 +1,143 @@
+SOURCES
+------------------------------------------------------
+Some records may constitute genealogical data in the lack of association
+with place and date, for example the record that two individuals were man
+and wife, or that one individual was the child of another
+
+07-10-1999 (i.e., July 10 or October 7)
+
+Easter 1730
+
+For example court records of an inheritance case may
+state "Jill never married and his illegitimate issue will not get
+anything" or "Robert was not born in Scotland so cannot inherit
+the land in our kingdom". Also, if Jill is your aunt, you just know
+she never married.
+
+On 10th of october 1942, in Los Angeles,
+    Charles West presented us their child. The mother is
+    his wife Maggy East. Charles is born on the 1st of
+    January 1920 in Salt Lake City, and now lives in San
+    Francisco with his wife. He wishes to give the name
+    of Jim to his newborn son.
+
+
+The late Rev: Can: Munselii d:r Elis: Chr: Muns:, aged 18,
+died 13 Apr, buried at Stroemsby cem: 18 Apr."
+  0 @E56@ EVEN
+    1 TYPE burial
+    1 PLAC Stroemsby cem[etery], Veckelax parish
+    1 CORP Lutheran congregation
+    1 DATE 18 Apr 1750
+    1 SOUR @S7@
+      2 ITEM 54/1750
+    1 @P1@ INDI
+      2 TITL Rev[erent]
+      2 NAME Can[utus] /Munseli[us]/
+      2 DEAT
+        3 DATE bef 18 Apr 1750
+    1 @P2@ INDI
+      2 NAME Elis[abet] Chr[istina] /Muns[elia]/
+      2 ROLE decedent
+      2 ASSO @P1@
+        3 TYPE daughter
+      2 DEAT
+        3 DATE 13 Apr 1750
+      2 AGE 18 yrs
+
+
+
+
+Cousin John got
+married last Sunday but we could not go to the wedding."
+No mention of the bride's identity. We can, of course, project
+our knowledge of "real reality" onto the past and create
+an empty record for wife. But if we know from other evidence
+that John had two (or more) wives and cannot relate the marriage
+evidence to one of them with reasonable degree of certainty,
+then the only choice is to place the data under INDI. Of course,
+we can always place them in a NOTE - but we do not want that :-)
+So, it is always the same old problem: one mother/two wives
+or one marriage/two wives
+
+
+you have primary records of John Doe being 31 in 1730, 41
+in 1741, 43 in 1742, and 63 in 1764.  Your source would contain no
+birthdates.
+You could say that you have evidence of a birthdate of 1699, 1700, and
+1701.  Your source has an age, which serves as evidence of an
+approximate birthdate.
+From that disparate evidence, you might draw a conclusion that he was
+born about 1700
+
+Joe did NOT have red hair, Jill was NEVER married, Robert was NOT born in Scotland.
+
+
+in Quebec, there is a form filled
+where there is a marriage, so for one marriage, you have the
+church copy, the court house copy and the form (for statistical
+purposes).  And since 1994, there is also a state copy in
+duplicate (and no more court house copy, while churches can
+have their own internal records).  
+
+
+Rev. Adam White was celebrating the ceremony of John Smith's christening
+
+
+John Smith was born on 12 October 1855 with red hair
+
+One of the problems I have had is
+recording information about where I've looked for a problem.  Example:
+I'm looking for the death date of my ancestor Hiram Kirkpatrick.  The
+sources that I have examined are: Probate files, headstone/cemetery
+information, local family histories, pension files, church records.
+All came up with no information.  How can I take this information with
+me in my GEDCOM file?
+
+says "X married Y on date D", and another
+source says "Z was a witness at X's wedding" - these clearly must be
+represented as two different wedding events
+
+he was born in Boston" - we have no way of knowing which
+Boston it 
+
+
+my examples
+-----------
+
+an index that lists just a person's name: "Smith, John" (no event?)
+two sources with dif info about one event "b: May" & "b: 1900"
+persona's role in an event
+characteristic (also an event?)
+relation between two events "John is older than Mary" (John's birth < Mary's birth)
+John was born near Cucklington
+a photograph of an old family residence
+tombstone
+census
+birth cert.
+death cert.
+marriage cert.
+land record
+
+
+
+------------------------------------------------------
+------------------------------------------------------
+------------------------------------------------------
+ASSERTIONS
+------------------------------------------------------
+Let us say that we have a record of the marriage of two individuals, in a
+family bible, and the will of an individual of the same name as the groom of
+the wedding records, from the same locality, which names a wife with the
+same given name as the bride, and lists a number of names of children, and
+carries a date an appropriate time span later than the marriage record.  We
+ASSERT that the bride and groom of the marriage record are the same as the
+parents of the family in the will, creating two higher-level PERSONAE.  Now,
+how can we test this ASSERTION?  If we find a will of a person whom we
+identify with the owner of the family bible, we have a potential test.
+Suppose the testator mentions his son and his son's wife, and their
+children, his grandchildren.  Now suppose that the list of grandchildren is
+completely different from the list of children in the first will.  We have
+just disproved our ASSERTION.  
+
+
