@@ -1,6 +1,8 @@
 # genealdb
 
-  places <-- sources
-    ^           ^
-    |           |
-    +- events <-+-> people <-- assertions
+```
+places <-- sources
+  ^           ^
+  |           |
+  +- events <-+-> people <-- assertions
+```
