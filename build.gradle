@@ -11,8 +11,20 @@ apply plugin: 'application'
 dependencies {
     implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
     implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
+    testImplementation group: 'com.google.truth', name: 'truth', version: 'latest.release'
+    testImplementation group: 'com.google.truth.extensions', name: 'truth-java8-extension', version: 'latest.release'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: 'latest.release'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: 'latest.release'
 }
 
 group = 'nu.mine.mosher.gedcom'
 version = '1.0.0-SNAPSHOT'
 mainClassName = 'nu.mine.mosher.genealdb.Genaldb'
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
