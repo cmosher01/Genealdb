@@ -1,104 +1,156 @@
 package nu.mine.mosher.genealdb;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Comparators;
-import com.google.common.math.Stats;
 import java.time.DateTimeException;
 import java.time.chrono.*;
 import java.time.format.*;
-import java.time.temporal.*;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static java.util.Comparator.comparing;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+/**
+ * A day (date), with a degree of precision (year, month, day), and possibly a "circa".
+ */
 public class Day implements Comparable<Day> {
     public static final Chronology DEFAULT_CHRONOLOGY = Chronology.ofLocale(Locale.getDefault());
 
+
+    //@formatter:off
+    private static final Set<ChronoUnit> VALID_PRECISIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+        ChronoUnit.FOREVER,
+        ChronoUnit.YEARS,
+        ChronoUnit.MONTHS,
+        ChronoUnit.DAYS
+    )));
+    //@formatter:on
+
+    private final ChronoLocalDate date;
     private final boolean circa;
-    private final Chronology chronology;
-    private final Optional<Integer> prolepticYear;
-    private final Optional<Integer> month;
-    private final Optional<Integer> day;
+    private final ChronoUnit precision;
 
-    private final transient ChronoUnit precision;
-    private final transient Optional<ChronoLocalDate> cld;
-    private final transient boolean otherEra;
-
-    public Day(final int prolepticYear) {
-        this(Optional.of(prolepticYear), Optional.empty(), Optional.empty());
+    /**
+     * @param date      date
+     *                  Full date is always required, even fields not covered
+     *                  by the give precision. Fields more precise than the
+     *                  given precision will be masked on display, but will
+     *                  still be considered for sorting purposes.
+     * @param precision most precise field in date to interpret:
+     *                  {@link ChronoUnit#FOREVER} (completely unknown date, all fields ignored)
+     *                  {@link ChronoUnit#YEARS} (only year)
+     *                  {@link ChronoUnit#MONTHS (year and month)
+     *                  {@link ChronoUnit#DAYS}} (year, month, and day)
+     */
+    public Day(final ChronoLocalDate date, final ChronoUnit precision) {
+        this(date, false, precision);
     }
 
-    public Day(final int prolepticYear, final int month) {
-        this(Optional.of(prolepticYear), Optional.of(month), Optional.empty());
-    }
-
-    public Day(final int prolepticYear, final int month, final int day) {
-        this(Optional.of(prolepticYear), Optional.of(month), Optional.of(day));
-    }
-
-    public Day(final Optional<Integer> prolepticYear, final Optional<Integer> month, final Optional<Integer> day) {
-        this(prolepticYear, month, day, false);
-    }
-
-    public Day(final Optional<Integer> prolepticYear, final Optional<Integer> month, final Optional<Integer> day, final boolean circa) {
-        this(prolepticYear, month, day, circa, DEFAULT_CHRONOLOGY);
-    }
-
-    public Day(final Optional<Integer> prolepticYear, final Optional<Integer> month, final Optional<Integer> day, final boolean circa, final Chronology chronology) {
-        this.chronology = chronology;
-
-        this.prolepticYear = prolepticYear;
-        this.month = this.prolepticYear.isPresent() ? month : Optional.empty();
-        this.day = this.month.isPresent() ? day : Optional.empty();
-
-        this.precision = calcPrec();
-
-        this.circa = circa && prec(ChronoUnit.YEARS);
-
-        this.cld = calcCld();
-
-        this.otherEra = this.cld.isPresent() && !this.cld.get().getEra().equals(this.chronology.dateNow().getEra());
-    }
-
-
-
-    private ChronoUnit calcPrec() {
-        if (!this.prolepticYear.isPresent()) {
-            return ChronoUnit.FOREVER;
-        }
-        if (!this.month.isPresent()) {
-            return ChronoUnit.YEARS;
-        }
-        if (!this.day.isPresent()) {
-            return ChronoUnit.MONTHS;
-        }
-        return ChronoUnit.DAYS;
-    }
-
-    private Optional<ChronoLocalDate> calcCld() {
-        switch (this.precision) {
-            case DAYS:
-                return Optional.of(this.chronology.date(prolepticYear.get(), month.get(), day.get()));
-            case MONTHS:
-                return Optional.of(this.chronology.date(prolepticYear.get(), month.get(), average(ChronoField.DAY_OF_MONTH)));
-            case YEARS:
-                return Optional.of(this.chronology.dateYearDay(prolepticYear.get(), average(ChronoField.DAY_OF_YEAR)));
-            default:
-                return Optional.empty();
+    private Day(final ChronoLocalDate date, final boolean circa, final ChronoUnit precision) {
+        this.date = Objects.requireNonNull(date, "date cannot be null");
+        this.circa = circa;
+        this.precision = Objects.requireNonNull(precision, "precision cannot be null");
+        if (!VALID_PRECISIONS.contains(this.precision)) {
+            throw new DateTimeException("Invalid precision");
         }
     }
 
-    private int average(final ChronoField field) {
-        final ValueRange range = this.chronology.range(field);
-        final int a = (int) Math.round(Stats.meanOf(range.getMinimum(), range.getMaximum()));
-        if (range.isValidValue(a)) {
-            return a;
-        }
-        if (range.isValidValue(1)) {
-            return 1;
-        }
-        throw new DateTimeException("Cannot determine average value for range.");
+    //    public Day() {
+    //    }
+
+    /**
+     * Creates a "circa" version of this date.
+     * But, if this date is unknown, simply return a
+     * new copy of this date (because "circa unknown"
+     * doesn't make sense).
+     *
+     * @return circa date
+     */
+    public Day withCirca() {
+        return new Day(this.date, !isUnknown(), this.precision);
+    }
+
+    /**
+     * Factory method for year in ISO-8601 calendar.
+     * The underlying full date (for sorting purposes) will be mid-year (July 2).
+     *
+     * @param prolepticYear year (proleptic, as defined by ISO=8601)
+     * @return new DayOld, with {@link ChronoUnit#YEARS} precision
+     */
+    public static Day ofYearIso(final int prolepticYear) {
+        return new Day(IsoChronology.INSTANCE.dateYearDay(prolepticYear, 366 / 2), false, ChronoUnit.YEARS);
+    }
+
+    /**
+     * Factory method for month in ISO-8601 calendar.
+     * The underlying full date (for sorting purposes) will be mid-month (the 15th).
+     *
+     * @param prolepticYear year (proleptic, as defined by ISO=8601)
+     * @param month         month (as defined by ISO=8601)
+     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     */
+    public static Day ofMonthIso(final int prolepticYear, final int month) {
+        return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, 30 / 2), false, ChronoUnit.MONTHS);
+    }
+
+    /**
+     * Factory method for full date in ISO-8601 calendar.
+     *
+     * @param prolepticYear year (proleptic, as defined by ISO=8601)
+     * @param month         month (as defined by ISO=8601)
+     * @param day           day (as defined by ISO-8601)
+     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     */
+    public static Day ofIso(final int prolepticYear, final int month, final int day) {
+        return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, day), false, ChronoUnit.DAYS);
+    }
+
+    /**
+     * Factory method for unknown date in ISO-8601 calendar.
+     * The full date must still be given, and will be used for sorting purposes.
+     * This allows the user flexibility within the "unknown" value-space as
+     * to how to sort a particular date. For example, some events, if the date
+     * is unknown, may prefer to sort last, as death or burial. Alternatively,
+     * birth may prefer to be sorted first.
+     *
+     * @param prolepticYear year (proleptic, as defined by ISO=8601)
+     * @param month         month (as defined by ISO=8601)
+     * @param day           day (as defined by ISO-8601)
+     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     */
+    public static Day unknownIso(final int prolepticYear, final int month, final int day) {
+        return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, day), false, ChronoUnit.FOREVER);
+    }
+
+    /**
+     * Gets the date. Note that fields more precise than
+     * this object's precision should never be considered
+     * valid, and never be displayed to an end user.
+     *
+     * @return date
+     */
+    public ChronoLocalDate getDate() {
+        return this.date;
+    }
+
+    public ChronoUnit getPrecision() {
+        return this.precision;
+    }
+
+    public boolean isUnknown() {
+        return this.precision.equals(ChronoUnit.FOREVER);
+    }
+
+    public boolean isCirca() {
+        return this.circa;
+    }
+
+    public boolean isOtherEra() {
+        return !this.date.getEra().equals(this.date.getChronology().dateNow().getEra()) && !isUnknown();
+    }
+
+    public boolean isOtherChrono() {
+        return !this.date.getChronology().equals(DEFAULT_CHRONOLOGY);
     }
 
     @Override
@@ -107,122 +159,106 @@ public class Day implements Comparable<Day> {
             return false;
         }
         final Day that = (Day) object;
-        return Objects.equals(this.circa, that.circa) &&
-            Objects.equals(this.chronology, that.chronology) &&
-            Objects.equals(this.prolepticYear, that.prolepticYear) &&
-            Objects.equals(this.month, that.month) &&
-            Objects.equals(this.day, that.day);
+        return Objects.equals(this.date, that.date) && Objects.equals(this.circa, that.circa) && Objects.equals(this.precision, that.precision);
     }
 
     @Override
     public int hashCode() {
-        return this.cld.hashCode();
+        return this.date.hashCode();
     }
 
     @Override
     public int compareTo(final Day that) {
-        return Comparators.emptiesLast(ChronoLocalDate.timeLineOrder()).compare(this.cld, that.cld);
+        return Comparator.comparing(Day::getDate, ChronoLocalDate.timeLineOrder()).compare(this, that);
     }
 
-    public static final int MAX_FIELD_WIDTH = 19;
-    public static final int MIN_YEAR_FIELD_WIDTH = 4;
-    public static final int MIN_MONTH_FIELD_WIDTH = 2;
-    public static final int MIN_DAY_FIELD_WIDTH = 2;
-    public static final char FIELD_SEPARATOR = '\u002d';
-    public static final char ERA_FIELD_SEPARATOR = '\u0020';
-    public static final char CIRCA_INDICATOR = '\u007e';
-    public static final char UNKNOWN_INDICATOR = '\u0058';
+    private static final int MAX_FIELD_WIDTH = 19;
+    private static final int MIN_YEAR_FIELD_WIDTH = 4;
+    private static final int MIN_MONTH_FIELD_WIDTH = 2;
+    private static final int MIN_DAY_FIELD_WIDTH = 2;
+    private static final char FIELD_SEPARATOR = '\u002d';
+    private static final char ERA_FIELD_SEPARATOR = '\u0020';
+    private static final char CIRCA_INDICATOR = '\u007e';
+    private static final char UNKNOWN_INDICATOR = '\u0058';
 
     @Override
     public String toString() {
-        final DateTimeFormatterBuilder b = bCal(bCirca(bDay(bMonth(bYear(bEra(new DateTimeFormatterBuilder()))))));
-        return b.toFormatter().format(this.cld.orElse(noDate()));
+        return formatter().format(this.date);
+    }
+
+    public String toDebugString() {
+        //@formatter:off
+        return
+            "<" +
+            (this.circa ? "c. " : "") +
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(this.date) +
+            "; p=" +
+            this.precision +
+            ">";
+        //@formatter:on
+    }
+
+
+
+    private DateTimeFormatter formatter() {
+        return bCal(bCirca(bDay(bMonth(bYear(bEra(new DateTimeFormatterBuilder())))))).toFormatter();
     }
 
     private DateTimeFormatterBuilder bEra(DateTimeFormatterBuilder b) {
-        if (this.otherEra) {
+        if (isOtherEra()) {
             b = b.appendText(ChronoField.ERA, TextStyle.SHORT).appendLiteral(ERA_FIELD_SEPARATOR);
         }
         return b;
     }
 
     private DateTimeFormatterBuilder bYear(DateTimeFormatterBuilder b) {
-        if (prec(ChronoUnit.YEARS)) {
+        if (asPreciseAs(ChronoUnit.YEARS)) {
             b = b.appendValue(ChronoField.YEAR_OF_ERA, MIN_YEAR_FIELD_WIDTH, MAX_FIELD_WIDTH, SignStyle.NORMAL);
         } else {
-            b = b.appendLiteral(unk(MIN_YEAR_FIELD_WIDTH));
+            b = b.appendLiteral(unknownField(MIN_YEAR_FIELD_WIDTH));
         }
         b = b.appendLiteral(FIELD_SEPARATOR);
         return b;
     }
 
     private DateTimeFormatterBuilder bMonth(DateTimeFormatterBuilder b) {
-        if (prec(ChronoUnit.MONTHS)) {
+        if (asPreciseAs(ChronoUnit.MONTHS)) {
             b = b.appendValue(ChronoField.MONTH_OF_YEAR, MIN_MONTH_FIELD_WIDTH, MAX_FIELD_WIDTH, SignStyle.NORMAL);
         } else {
-            b = b.appendLiteral(unk(MIN_MONTH_FIELD_WIDTH));
+            b = b.appendLiteral(unknownField(MIN_MONTH_FIELD_WIDTH));
         }
         b = b.appendLiteral(FIELD_SEPARATOR);
         return b;
     }
 
     private DateTimeFormatterBuilder bDay(DateTimeFormatterBuilder b) {
-        if (prec(ChronoUnit.DAYS)) {
+        if (asPreciseAs(ChronoUnit.DAYS)) {
             b = b.appendValue(ChronoField.DAY_OF_MONTH, MIN_DAY_FIELD_WIDTH, MAX_FIELD_WIDTH, SignStyle.NORMAL);
         } else {
-            b = b.appendLiteral(unk(MIN_DAY_FIELD_WIDTH));
+            b = b.appendLiteral(unknownField(MIN_DAY_FIELD_WIDTH));
         }
         return b;
     }
 
     private DateTimeFormatterBuilder bCirca(DateTimeFormatterBuilder b) {
-        if (this.circa) {
+        if (isCirca()) {
             b = b.appendLiteral(CIRCA_INDICATOR);
         }
         return b;
     }
 
     private DateTimeFormatterBuilder bCal(DateTimeFormatterBuilder b) {
-        if (!this.chronology.equals(DEFAULT_CHRONOLOGY)) {
-            b = b.appendLiteral(" (" + this.chronology.getId() + ")");
+        if (isOtherChrono()) {
+            b = b.appendLiteral(" (" + this.date.getChronology().getId() + ")");
         }
         return b;
     }
 
-    private static String unk(final int width) {
+    private static String unknownField(final int width) {
         return Strings.repeat(Character.toString(UNKNOWN_INDICATOR), width);
     }
 
-    private boolean prec(final ChronoUnit u) {
+    private boolean asPreciseAs(final ChronoUnit u) {
         return comparing(ChronoUnit::getDuration).compare(this.precision, u) <= 0;
-    }
-
-    private ChronoLocalDate noDate() {
-        return new ChronoLocalDate() {
-            @Override
-            public Chronology getChronology() {
-                return Day.this.chronology;
-            }
-
-            @Override
-            public int lengthOfMonth() {
-                return 0;
-            }
-
-            @Override
-            public long until(final Temporal endExclusive, final TemporalUnit unit) {
-                return 0;
-            }
-
-            @Override
-            public ChronoPeriod until(final ChronoLocalDate endDateExclusive) {
-                return null;
-            }
-
-            @Override
-            public long getLong(final TemporalField field) {
-                return 0;
-            }
-        };
     }
 }
