@@ -72,7 +72,7 @@ public class DayTest {
         assertThrows(NullPointerException.class, () -> new Day(IsoChronology.INSTANCE.dateNow(), null));
     }
 
-    private static Day show(final Day uut) {
+    static Day show(final Day uut) {
         System.out.println(uut.toString() + " " + uut.toDebugString());
         return uut;
     }

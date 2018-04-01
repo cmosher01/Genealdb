@@ -30,6 +30,8 @@ public class Day implements Comparable<Day> {
     private final boolean circa;
     private final ChronoUnit precision;
 
+
+
     /**
      * @param date      date
      *                  Full date is always required, even fields not covered
@@ -55,8 +57,8 @@ public class Day implements Comparable<Day> {
         }
     }
 
-    //    public Day() {
-    //    }
+//    public Day() {
+//    }
 
     /**
      * Creates a "circa" version of this date.
@@ -75,7 +77,7 @@ public class Day implements Comparable<Day> {
      * The underlying full date (for sorting purposes) will be mid-year (July 2).
      *
      * @param prolepticYear year (proleptic, as defined by ISO=8601)
-     * @return new DayOld, with {@link ChronoUnit#YEARS} precision
+     * @return new Day, with {@link ChronoUnit#YEARS} precision
      */
     public static Day ofYearIso(final int prolepticYear) {
         return new Day(IsoChronology.INSTANCE.dateYearDay(prolepticYear, 366 / 2), false, ChronoUnit.YEARS);
@@ -87,7 +89,7 @@ public class Day implements Comparable<Day> {
      *
      * @param prolepticYear year (proleptic, as defined by ISO=8601)
      * @param month         month (as defined by ISO=8601)
-     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     * @return new Day, with {@link ChronoUnit#MONTHS} precision
      */
     public static Day ofMonthIso(final int prolepticYear, final int month) {
         return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, 30 / 2), false, ChronoUnit.MONTHS);
@@ -99,7 +101,7 @@ public class Day implements Comparable<Day> {
      * @param prolepticYear year (proleptic, as defined by ISO=8601)
      * @param month         month (as defined by ISO=8601)
      * @param day           day (as defined by ISO-8601)
-     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     * @return new Day, with {@link ChronoUnit#MONTHS} precision
      */
     public static Day ofIso(final int prolepticYear, final int month, final int day) {
         return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, day), false, ChronoUnit.DAYS);
@@ -116,11 +118,13 @@ public class Day implements Comparable<Day> {
      * @param prolepticYear year (proleptic, as defined by ISO=8601)
      * @param month         month (as defined by ISO=8601)
      * @param day           day (as defined by ISO-8601)
-     * @return new DayOld, with {@link ChronoUnit#MONTHS} precision
+     * @return new Day, with {@link ChronoUnit#MONTHS} precision
      */
     public static Day unknownIso(final int prolepticYear, final int month, final int day) {
         return new Day(IsoChronology.INSTANCE.date(prolepticYear, month, day), false, ChronoUnit.FOREVER);
     }
+
+
 
     /**
      * Gets the date. Note that fields more precise than
@@ -153,6 +157,8 @@ public class Day implements Comparable<Day> {
         return !this.date.getChronology().equals(DEFAULT_CHRONOLOGY);
     }
 
+
+
     @Override
     public boolean equals(final Object object) {
         if (!(object instanceof Day)) {
@@ -172,15 +178,6 @@ public class Day implements Comparable<Day> {
         return Comparator.comparing(Day::getDate, ChronoLocalDate.timeLineOrder()).compare(this, that);
     }
 
-    private static final int MAX_FIELD_WIDTH = 19;
-    private static final int MIN_YEAR_FIELD_WIDTH = 4;
-    private static final int MIN_MONTH_FIELD_WIDTH = 2;
-    private static final int MIN_DAY_FIELD_WIDTH = 2;
-    private static final char FIELD_SEPARATOR = '\u002d';
-    private static final char ERA_FIELD_SEPARATOR = '\u0020';
-    private static final char CIRCA_INDICATOR = '\u007e';
-    private static final char UNKNOWN_INDICATOR = '\u0058';
-
     @Override
     public String toString() {
         return formatter().format(this.date);
@@ -199,6 +196,15 @@ public class Day implements Comparable<Day> {
     }
 
 
+
+    private static final int MAX_FIELD_WIDTH = 19;
+    private static final int MIN_YEAR_FIELD_WIDTH = 4;
+    private static final int MIN_MONTH_FIELD_WIDTH = 2;
+    private static final int MIN_DAY_FIELD_WIDTH = 2;
+    private static final char FIELD_SEPARATOR = '\u002d';
+    private static final char ERA_FIELD_SEPARATOR = '\u0020';
+    private static final char CIRCA_INDICATOR = '\u007e';
+    private static final char UNKNOWN_INDICATOR = '\u0058';
 
     private DateTimeFormatter formatter() {
         return bCal(bCirca(bDay(bMonth(bYear(bEra(new DateTimeFormatterBuilder())))))).toFormatter();

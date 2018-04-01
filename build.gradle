@@ -19,7 +19,7 @@ dependencies {
 
 group = 'nu.mine.mosher.gedcom'
 version = '1.0.0-SNAPSHOT'
-mainClassName = 'nu.mine.mosher.genealdb.Genaldb'
+mainClassName = 'nu.mine.mosher.genealdb.Genealdb'
 
 test {
     useJUnitPlatform()
