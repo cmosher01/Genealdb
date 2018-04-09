@@ -1,7 +1,7 @@
 repositories {
     mavenCentral()
     maven {
-        url 'http://mosher.mine.nu/nexus/repository/maven-public/'
+        url = URI.create('http://mosher.mine.nu/nexus/repository/maven-public/')
     }
 }
 
@@ -9,17 +9,60 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 dependencies {
-    implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
     implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
+//    implementation group: 'org.apache.commons', name: 'commons-lang3', version: 'latest.release'
+    implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
+
+//    implementation group: 'org.datanucleus', name: 'javax.jdo', version: 'latest.release'
+//    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: 'latest.release'
+//    runtimeOnly group: 'org.datanucleus', name: 'datanucleus-api-jdo', version: '5.0.+'
+//    implementation /*MultiColumnConverter*/ group: 'org.datanucleus', name: 'datanucleus-core', version: '5.0.+'
+//    runtimeOnly group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.0.+'
+////    runtimeOnly group: 'hsqldb', name: 'hsqldb', version: 'latest.release'
+//    runtimeOnly group: 'org.datanucleus', name: 'datanucleus-neo4j', version: '5.0.+'
+//    runtimeOnly group: 'org.neo4j', name: 'neo4j', version: 'latest.release'
+//    runtimeOnly group: 'org.neo4j', name: 'neo4j-bolt', version: 'latest.release'
+//    runtimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: 'latest.release'
+
+
+    implementation group: 'org.neo4j', name: 'neo4j-ogm-core', version: 'latest.release'
+    runtimeOnly group: 'org.neo4j', name: 'neo4j-ogm-bolt-driver', version: 'latest.release'
+    runtimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: 'latest.release'
+
+
+
     testImplementation group: 'com.google.truth', name: 'truth', version: 'latest.release'
     testImplementation group: 'com.google.truth.extensions', name: 'truth-java8-extension', version: 'latest.release'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: 'latest.release'
+
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: 'latest.release'
 }
 
 group = 'nu.mine.mosher.gedcom'
 version = '1.0.0-SNAPSHOT'
 mainClassName = 'nu.mine.mosher.genealdb.Genealdb'
+sourceCompatibility = '1.9'
+targetCompatibility = '1.9'
+
+//task datanucleusEnhance {
+//    description = "Enhance JPA model classes using DataNucleus Enhancer"
+//    dependsOn processResources
+//
+//    doLast {
+//        def entityFiles = fileTree(sourceSets.main.output.resourcesDir).matching {
+//            include '**/*.jdo'
+//        }
+//
+//        ant.taskdef(name: 'enhance', classpath: sourceSets.main.runtimeClasspath.asPath, classname: 'org.datanucleus.enhancer.EnhancerTask')
+//
+//        ant.enhance(classpath: sourceSets.main.runtimeClasspath.asPath, verbose: true, api: 'JDO') {
+//            entityFiles.addToAntBuilder(ant, 'fileset', FileCollection.AntType.FileSet)
+//        }
+//    }
+//}
+//
+//classes.dependsOn(datanucleusEnhance)
 
 test {
     useJUnitPlatform()

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+    <key id="labels" for="node" attr.name="label" attr.type="string"/>
+    <key id="role" for="edge" attr.name="label" attr.type="string"/>
+    <graph id="G" edgedefault="directed">
+        <node id="n61" labels=":Persona">
+            <data key="labels">:Persona</data>
+            <data key="name">Christopher Alan /Mosher/</data>
+        </node>
+        <node id="n62" labels=":Persona">
+            <data key="labels">:Persona</data>
+            <data key="name">Linda Marilyn /Disosway/</data>
+        </node>
+        <node id="n63" labels=":Persona">
+            <data key="labels">:Persona</data>
+            <data key="name">Barry Rexford /Mosher/</data>
+        </node>
+        <node id="n64" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1966</data>
+            <data key="day">3</data>
+            <data key="place">Radford</data>
+            <data key="circa">false</data>
+            <data key="precision">DAYS</data>
+            <data key="type">name</data>
+            <data key="description">Barry Rexford /Mosher/</data>
+        </node>
+        <node id="n65" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1966</data>
+            <data key="day">3</data>
+            <data key="place">Radford</data>
+            <data key="circa">false</data>
+            <data key="precision">DAYS</data>
+            <data key="type">name</data>
+            <data key="description">Christopher Alan /Mosher/</data>
+        </node>
+        <node id="n66" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="day">2</data>
+            <data key="precision">YEARS</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1941</data>
+            <data key="description">the birth of Linda Marilyn Disosway</data>
+            <data key="type">birth</data>
+            <data key="place">New York, USA</data>
+            <data key="circa">true</data>
+        </node>
+        <node id="n67" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="day">2</data>
+            <data key="precision">YEARS</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1939</data>
+            <data key="description">the birth of Barry Rexford Mosher</data>
+            <data key="type">birth</data>
+            <data key="place">New York, USA</data>
+            <data key="circa">true</data>
+        </node>
+        <node id="n68" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="day">3</data>
+            <data key="precision">DAYS</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1966</data>
+            <data key="description">the birth of Christopher Alan Mosher</data>
+            <data key="type">birth</data>
+            <data key="place">Radford</data>
+            <data key="circa">false</data>
+        </node>
+        <node id="n69" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="chronology">ISO</data>
+            <data key="month">7</data>
+            <data key="year">1966</data>
+            <data key="day">3</data>
+            <data key="place">Radford</data>
+            <data key="circa">false</data>
+            <data key="precision">DAYS</data>
+            <data key="type">name</data>
+            <data key="description">Linda Marilyn /Disosway/</data>
+        </node>
+        <node id="n70" labels=":Event">
+            <data key="labels">:Event</data>
+            <data key="month">7</data>
+            <data key="year">1963</data>
+            <data key="day">2</data>
+            <data key="place">New York, USA</data>
+            <data key="precision">YEARS</data>
+            <data key="chronology">ISO</data>
+            <data key="type">marriage</data>
+            <data key="description"></data>
+            <data key="circa">true</data>
+        </node>
+        <node id="n71" labels=":Citation">
+            <data key="labels">:Citation</data>
+            <data key="brief">birth certificate of Christopher Mosher</data>
+        </node>
+        <edge id="e60" source="n63" target="n71" label="CITATION">
+            <data key="label">CITATION</data>
+        </edge>
+        <edge id="e61" source="n61" target="n71" label="CITATION">
+            <data key="label">CITATION</data>
+        </edge>
+        <edge id="e62" source="n62" target="n71" label="CITATION">
+            <data key="label">CITATION</data>
+        </edge>
+        <edge id="e63" source="n62" target="n70" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">6</data>
+            <data key="role">wife</data>
+        </edge>
+        <edge id="e64" source="n63" target="n64" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">subject</data>
+        </edge>
+        <edge id="e65" source="n61" target="n65" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">subject</data>
+        </edge>
+        <edge id="e66" source="n62" target="n66" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">newborn</data>
+        </edge>
+        <edge id="e67" source="n63" target="n67" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">newborn</data>
+        </edge>
+        <edge id="e68" source="n61" target="n68" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">newborn</data>
+        </edge>
+        <edge id="e69" source="n62" target="n68" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">mother</data>
+        </edge>
+        <edge id="e70" source="n63" target="n68" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">8</data>
+            <data key="role">father</data>
+        </edge>
+        <edge id="e71" source="n62" target="n69" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">10</data>
+            <data key="role">subject</data>
+        </edge>
+        <edge id="e72" source="n63" target="n70" label="HAD_ROLE_IN">
+            <data key="label">HAD_ROLE_IN</data>
+            <data key="certainty">6</data>
+            <data key="role">husband</data>
+        </edge>
+        <edge id="e73" source="n71" target="n61" label="PERSONAE">
+            <data key="label">PERSONAE</data>
+        </edge>
+        <edge id="e74" source="n71" target="n63" label="PERSONAE">
+            <data key="label">PERSONAE</data>
+        </edge>
+        <edge id="e75" source="n71" target="n62" label="PERSONAE">
+            <data key="label">PERSONAE</data>
+        </edge>
+    </graph>
+</graphml>

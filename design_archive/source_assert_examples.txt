@@ -78,7 +78,7 @@ where there is a marriage, so for one marriage, you have the
 church copy, the court house copy and the form (for statistical
 purposes).  And since 1994, there is also a state copy in
 duplicate (and no more court house copy, while churches can
-have their own internal records).  
+have their own internal records).
 
 
 Rev. Adam White was celebrating the ceremony of John Smith's christening
@@ -99,7 +99,7 @@ source says "Z was a witness at X's wedding" - these clearly must be
 represented as two different wedding events
 
 he was born in Boston" - we have no way of knowing which
-Boston it 
+Boston it
 
 
 my examples
@@ -130,7 +130,7 @@ Let us say that we have a record of the marriage of two individuals, in a
 family bible, and the will of an individual of the same name as the groom of
 the wedding records, from the same locality, which names a wife with the
 same given name as the bride, and lists a number of names of children, and
-carries a date an appropriate time span later than the marriage record.  We
+carries a date an appropriate day span later than the marriage record.  We
 ASSERT that the bride and groom of the marriage record are the same as the
 parents of the family in the will, creating two higher-level PERSONAE.  Now,
 how can we test this ASSERTION?  If we find a will of a person whom we
@@ -138,6 +138,6 @@ identify with the owner of the family bible, we have a potential test.
 Suppose the testator mentions his son and his son's wife, and their
 children, his grandchildren.  Now suppose that the list of grandchildren is
 completely different from the list of children in the first will.  We have
-just disproved our ASSERTION.  
+just disproved our ASSERTION.
 
 

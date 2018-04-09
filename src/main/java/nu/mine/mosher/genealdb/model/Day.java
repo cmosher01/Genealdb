@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb;
+package nu.mine.mosher.genealdb.model;
 
 import com.google.common.base.Strings;
 import java.time.DateTimeException;
@@ -8,6 +8,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Comparator.comparing;
 
 /**
@@ -18,17 +19,12 @@ public class Day implements Comparable<Day> {
 
 
     //@formatter:off
-    private static final Set<ChronoUnit> VALID_PRECISIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-        ChronoUnit.FOREVER,
-        ChronoUnit.YEARS,
-        ChronoUnit.MONTHS,
-        ChronoUnit.DAYS
-    )));
+    private static final Set<ChronoUnit> VALID_PRECISIONS = Set.of(ChronoUnit.FOREVER,ChronoUnit.YEARS,ChronoUnit.MONTHS,ChronoUnit.DAYS);
     //@formatter:on
 
-    private final ChronoLocalDate date;
-    private final boolean circa;
-    private final ChronoUnit precision;
+    private ChronoLocalDate date;
+    private boolean circa;
+    private ChronoUnit precision;
 
 
 
@@ -57,8 +53,7 @@ public class Day implements Comparable<Day> {
         }
     }
 
-//    public Day() {
-//    }
+
 
     /**
      * Creates a "circa" version of this date.
@@ -145,19 +140,37 @@ public class Day implements Comparable<Day> {
         return this.precision.equals(ChronoUnit.FOREVER);
     }
 
+    public boolean isExact() {
+        return this.precision.equals(ChronoUnit.DAYS) && !this.circa;
+    }
+
     public boolean isCirca() {
         return this.circa;
     }
 
     public boolean isOtherEra() {
-        return !this.date.getEra().equals(this.date.getChronology().dateNow().getEra()) && !isUnknown();
+        return !this.date
+            .getEra()
+            .equals(this.date
+                .getChronology()
+                .dateNow()
+                .getEra()) && !isUnknown();
     }
 
     public boolean isOtherChrono() {
-        return !this.date.getChronology().equals(DEFAULT_CHRONOLOGY);
+        return !this.date
+            .getChronology()
+            .equals(DEFAULT_CHRONOLOGY);
     }
 
 
+
+    @Override
+    public String toString() {
+        return toStringHelper(this)
+            .addValue(getDisplayWithFullDate())
+            .toString();
+    }
 
     @Override
     public boolean equals(final Object object) {
@@ -175,23 +188,26 @@ public class Day implements Comparable<Day> {
 
     @Override
     public int compareTo(final Day that) {
-        return Comparator.comparing(Day::getDate, ChronoLocalDate.timeLineOrder()).compare(this, that);
+        return Comparator
+            .comparing(Day::getDate, ChronoLocalDate.timeLineOrder())
+            .compare(this, that);
     }
 
-    @Override
-    public String toString() {
+
+
+    public String getDisplay() {
         return formatter().format(this.date);
     }
 
-    public String toDebugString() {
+    public String getDisplayWithFullDate() {
         //@formatter:off
         return
-            "<" +
+            "Day[" +
             (this.circa ? "c. " : "") +
             DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(this.date) +
             "; p=" +
             this.precision +
-            ">";
+            "]";
         //@formatter:on
     }
 
@@ -212,7 +228,9 @@ public class Day implements Comparable<Day> {
 
     private DateTimeFormatterBuilder bEra(DateTimeFormatterBuilder b) {
         if (isOtherEra()) {
-            b = b.appendText(ChronoField.ERA, TextStyle.SHORT).appendLiteral(ERA_FIELD_SEPARATOR);
+            b = b
+                .appendText(ChronoField.ERA, TextStyle.SHORT)
+                .appendLiteral(ERA_FIELD_SEPARATOR);
         }
         return b;
     }
@@ -255,16 +273,20 @@ public class Day implements Comparable<Day> {
 
     private DateTimeFormatterBuilder bCal(DateTimeFormatterBuilder b) {
         if (isOtherChrono()) {
-            b = b.appendLiteral(" (" + this.date.getChronology().getId() + ")");
+            b = b.appendLiteral(" (" +
+                this.date
+                    .getChronology()
+                    .getId() +
+                ")");
         }
         return b;
     }
 
-    private static String unknownField(final int width) {
-        return Strings.repeat(Character.toString(UNKNOWN_INDICATOR), width);
-    }
-
     private boolean asPreciseAs(final ChronoUnit u) {
         return comparing(ChronoUnit::getDuration).compare(this.precision, u) <= 0;
+    }
+
+    private static String unknownField(final int width) {
+        return Strings.repeat(Character.toString(UNKNOWN_INDICATOR), width);
     }
 }
