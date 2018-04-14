@@ -1,7 +1,8 @@
-package nu.mine.mosher.genealdb.model;
+package nu.mine.mosher.genealdb.model.entity;
 
 import java.util.Objects;
-import nu.mine.mosher.jdo.convert.CertaintyConverter;
+import nu.mine.mosher.genealdb.model.type.Certainty;
+import nu.mine.mosher.genealdb.model.type.convert.CertaintyConverter;
 import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
 

@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb.model;
+package nu.mine.mosher.genealdb.model.type;
 
 public class Certainty implements Comparable<Certainty> {
     public static final Certainty UNKNOWN = new Certainty(0L);
@@ -9,7 +9,7 @@ public class Certainty implements Comparable<Certainty> {
     // higher values are more certain
     // negative values indicate certainty of denial?
     // -10 <= certainty <= +10
-    private long certainty;
+    private final long certainty;
 
 
 

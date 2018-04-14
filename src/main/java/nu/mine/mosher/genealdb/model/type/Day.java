@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb.model;
+package nu.mine.mosher.genealdb.model.type;
 
 import com.google.common.base.Strings;
 import java.time.DateTimeException;
@@ -22,9 +22,9 @@ public class Day implements Comparable<Day> {
     private static final Set<ChronoUnit> VALID_PRECISIONS = Set.of(ChronoUnit.FOREVER,ChronoUnit.YEARS,ChronoUnit.MONTHS,ChronoUnit.DAYS);
     //@formatter:on
 
-    private ChronoLocalDate date;
-    private boolean circa;
-    private ChronoUnit precision;
+    private final ChronoLocalDate date;
+    private final boolean circa;
+    private final ChronoUnit precision;
 
 
 

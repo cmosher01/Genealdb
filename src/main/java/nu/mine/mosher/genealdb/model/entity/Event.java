@@ -1,10 +1,12 @@
-package nu.mine.mosher.genealdb.model;
+package nu.mine.mosher.genealdb.model.entity;
 
 
 
 import java.util.*;
-import nu.mine.mosher.jdo.convert.CertaintyConverter;
-import nu.mine.mosher.jdo.convert.DayConverter;
+import nu.mine.mosher.genealdb.model.type.Certainty;
+import nu.mine.mosher.genealdb.model.type.Day;
+import nu.mine.mosher.genealdb.model.type.convert.CertaintyConverter;
+import nu.mine.mosher.genealdb.model.type.convert.DayConverter;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
 

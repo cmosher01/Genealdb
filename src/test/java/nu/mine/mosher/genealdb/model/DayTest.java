@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.chrono.*;
 import java.time.temporal.ChronoUnit;
+import nu.mine.mosher.genealdb.model.type.Day;
 import org.junit.jupiter.api.Test;
 import org.threeten.extra.chrono.JulianDate;
 

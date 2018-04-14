@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb.model;
+package nu.mine.mosher.genealdb.model.entity;
 
 import java.util.*;
 import org.neo4j.ogm.annotation.Relationship;

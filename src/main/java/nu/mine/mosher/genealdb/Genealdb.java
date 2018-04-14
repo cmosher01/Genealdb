@@ -4,12 +4,14 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
-import nu.mine.mosher.genealdb.model.*;
+import nu.mine.mosher.genealdb.model.entity.*;
+import nu.mine.mosher.genealdb.model.type.Certainty;
+import nu.mine.mosher.genealdb.model.type.Day;
 import org.neo4j.ogm.config.*;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 
-import static nu.mine.mosher.genealdb.model.Certainty.MUST;
+import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
 public class Genealdb {
     public static void main(final String... args) throws InterruptedException, ClassNotFoundException {
@@ -42,7 +44,7 @@ public class Genealdb {
     private static void read(final Session session) {
         final Collection<Citation> citations = session.loadAll(Citation.class, -1);
         citations.forEach(citation -> {
-            dumpByPersona(citation);
+            //dumpByPersona(citation);
             dumpByEvent(citation);
         });
     }

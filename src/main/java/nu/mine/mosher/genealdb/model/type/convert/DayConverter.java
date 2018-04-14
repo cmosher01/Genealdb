@@ -1,10 +1,10 @@
-package nu.mine.mosher.jdo.convert;
+package nu.mine.mosher.genealdb.model.type.convert;
 
 import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import nu.mine.mosher.genealdb.model.Day;
+import nu.mine.mosher.genealdb.model.type.Day;
 import org.neo4j.ogm.typeconversion.CompositeAttributeConverter;
 import org.neo4j.ogm.typeconversion.EnumStringConverter;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ public class DayConverter implements CompositeAttributeConverter<Day> {
     private static final Logger LOG = LoggerFactory.getLogger(DayConverter.class);
 
     @Override
-    public Map<String, ?> toGraphProperties(final Day day) {
+    public Map toGraphProperties(final Day day) {
         LOG.trace("Using custom converter for Day({}) => properties", day.getDisplay());
         final Map properties = new HashMap();
         properties.putAll(new ChronoLocalDateConverter().toGraphProperties(day.getDate()));
@@ -24,7 +24,7 @@ public class DayConverter implements CompositeAttributeConverter<Day> {
     }
 
     @Override
-    public Day toEntityAttribute(final Map<String, ?> properties) {
+    public Day toEntityAttribute(final Map properties) {
         final ChronoLocalDate date = new ChronoLocalDateConverter().toEntityAttribute(properties);
         final ChronoUnit precision = (ChronoUnit)new EnumStringConverter(ChronoUnit.class).toEntityAttribute(properties.get("precision").toString());
         Day day = new Day(date, precision);

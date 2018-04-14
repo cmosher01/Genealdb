@@ -1,6 +1,6 @@
-package nu.mine.mosher.jdo.convert;
+package nu.mine.mosher.genealdb.model.type.convert;
 
-import nu.mine.mosher.genealdb.model.Certainty;
+import nu.mine.mosher.genealdb.model.type.Certainty;
 import org.neo4j.ogm.typeconversion.AttributeConverter;
 
 public class CertaintyConverter implements AttributeConverter<Certainty, Long> {
