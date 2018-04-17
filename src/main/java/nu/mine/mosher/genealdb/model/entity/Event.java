@@ -68,6 +68,10 @@ public class Event implements Comparable<Event> {
 
 
 
+    public Long getId() {
+        return this.id;
+    }
+
     public String getDisplay() {
         return this.happenedOn.getDisplay() + "|" + this.place + "|" + this.type + "|" + this.description;
     }

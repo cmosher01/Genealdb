@@ -53,6 +53,10 @@ public class Role {
 
 
 
+    public Long getId() {
+        return this.id;
+    }
+
     public String getDisplay() {
         return this.role + " (" + this.certainty + ")";
     }

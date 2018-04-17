@@ -47,8 +47,12 @@ public class Is {
 
 
 
+    public Long getId() {
+        return this.id;
+    }
+
     public String getDisplay() {
-        return "is (" + this.certainty + ")";
+        return "(" + this.certainty + ")";
     }
 
     public Sameness getSameness() {

@@ -52,6 +52,10 @@ public class Persona {
     }
 
 
+    public Long getId() {
+        return this.id;
+    }
+
     public Set<Is> getXrefs() {
         return unmodifiableSet(this.xrefs);
     }

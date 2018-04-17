@@ -93,6 +93,11 @@ public class Citation implements Comparable<Citation> {
         return s;
     }
 
+
+    public Long getId() {
+        return this.id;
+    }
+
     public Set<Sameness> getMatchings() {
         return unmodifiableSet(this.matchings);
     }

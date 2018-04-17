@@ -9,6 +9,8 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 dependencies {
+    implementation group: 'com.sparkjava', name: 'spark-core', version: 'latest.release'
+    implementation group: 'org.antlr', name: 'ST4', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
     implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
     implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'

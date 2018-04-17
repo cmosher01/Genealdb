@@ -1,0 +1,62 @@
+delimiters "$", "$"
+
+
+
+prepage(x) ::= "$page(pre(exp(x)))$"
+
+
+
+page(x) ::= <<
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data Web</title>
+</head>
+<body>
+<pre><nav><a href="?">home</a></nav></pre>
+$x$
+</body>
+</html>
+>>
+
+
+
+exp(x) ::= <<
+$line(x.line)$
+$if (x.expandable)$
+    $x:exp()$$\\$
+$endif$
+>>
+
+
+
+line(x) ::= <%
+$if (x.label)$
+    $val(x.label)$
+    :
+    $\ $
+$endif$
+$x.values:val(); separator=" "$
+%>
+
+
+
+val(x) ::= "$a(x)$"
+
+
+
+a(x) ::= <%
+$if(x.id)$
+    <a href="?entity=$x.class.name$&id=$x.id$">
+        $x$
+    </a>
+$else$
+    $x$
+$endif$
+%>
+
+
+
+pre(x) ::= "<pre>$\n$$x$</pre>"
+s(x,y) ::= "$x$$y$"

@@ -41,6 +41,10 @@ public class Sameness {
 
 
 
+    public Long getId() {
+        return this.id;
+    }
+
     public Set<Is> getAre() {
         return unmodifiableSet(this.are);
     }
