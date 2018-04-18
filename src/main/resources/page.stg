@@ -47,8 +47,12 @@ val(x) ::= "$a(x)$"
 
 
 a(x) ::= <%
-$if(x.id)$
+$if (x.id)$
     <a href="?entity=$x.class.name$&id=$x.id$">
+        $x$
+    </a>
+$elseif (x.host || x.path || x.query)$
+    <a href="$x$">
         $x$
     </a>
 $else$

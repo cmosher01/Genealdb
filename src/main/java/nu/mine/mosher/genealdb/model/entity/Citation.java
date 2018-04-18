@@ -6,7 +6,9 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import java.net.URI;
 import java.util.*;
+import nu.mine.mosher.genealdb.model.type.convert.UriConverter;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Collections.unmodifiableSet;
@@ -20,6 +22,7 @@ public class Citation implements Comparable<Citation> {
     private Set<Persona> personae = new HashSet<>();
 
     private String brief;
+    @Convert(UriConverter.class)
     private URI uri;
 
     private Long id;
