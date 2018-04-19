@@ -1,6 +1,7 @@
 package nu.mine.mosher.genealdb.model;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Set;
 import nu.mine.mosher.genealdb.model.entity.*;
 import nu.mine.mosher.genealdb.model.type.Certainty;
@@ -9,7 +10,7 @@ import nu.mine.mosher.genealdb.model.type.Day;
 import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
 public class Sample {
-    public static Set<Citation> buildCitation() {
+    public static Set buildEntities() {
         final Citation birthCertificate = new Citation("birth certificate of Christopher Alan Mosher", URI.create("http://mosher.mine.nu/sources/mosher_chris_birthcert"));
 
         final Persona chris = new Persona(birthCertificate, "Christopher Alan /Mosher/");
@@ -64,7 +65,44 @@ public class Sample {
         new Is(me, chris2, MUST, notes);
 
 
+        final Place pColonies = new Place("British colonies in America");
+        pColonies.self(LocalDate.of(1607, 5, 4));
+        final Place pNewEnglandCols = new Place("New England colonies");
+        pNewEnglandCols.self(LocalDate.of(1620, 4, 10));
+        pNewEnglandCols.in(pColonies);
+        final Place pNewEnglandConf = new Place("United Colonies of New England");
+        pNewEnglandConf.in(pColonies);
+        pNewEnglandCols.became(pNewEnglandConf, LocalDate.of(1643, 5, 19));
+        final Place pNewEnglandDom = new Place("Dominion of New England");
+        pNewEnglandDom.in(pColonies);
+        pNewEnglandConf.became(pNewEnglandDom, LocalDate.of(1686, 5, 25));
+        final Place pNewEnglandReg = new Place("New England region");
+        pNewEnglandReg.in(pColonies);
+        pNewEnglandDom.became(pNewEnglandReg, LocalDate.of(1689, 4, 18));
 
-        return Set.of(myRootPedigreeDatabase, driversLicense, birthCertificate);
+        final Place pUSA = new Place("United States of America");
+        pColonies.became(pUSA, LocalDate.of(1776, 7, 4));
+        pNewEnglandReg.in(pUSA);
+
+        final Place pConnCol = new Place("Colony of Connecticut");
+        pConnCol.self(LocalDate.of(1636,3,3));
+        pConnCol.in(pNewEnglandCols);
+        pConnCol.in(pNewEnglandConf);
+        pConnCol.in(pNewEnglandDom);
+        pConnCol.in(pNewEnglandReg);
+        final Place pNewHavenCol = new Place("Colony of New Haven");
+        pNewHavenCol.self(LocalDate.of(1637,6,26));
+        pNewHavenCol.in(pNewEnglandCols);
+        pNewHavenCol.in(pNewEnglandConf);
+        pNewHavenCol.became(pConnCol, LocalDate.of(1664, 12, 14));
+        final Place pSaybrookCol = new Place("Colony of Saybrook");
+        pSaybrookCol.self(LocalDate.of(1635, 11, 24));
+        pSaybrookCol.in(pNewEnglandCols);
+        pSaybrookCol.became(pConnCol, LocalDate.of(1644, 12, 5));
+
+        final Place pConn = new Place("State of Connecticut");
+        pConn.in(pNewEnglandReg);
+        pConnCol.became(pConn, LocalDate.of(1788, 1, 9));
+        return Set.of(myRootPedigreeDatabase, driversLicense, birthCertificate, pConn, pConnCol, pSaybrookCol, pNewHavenCol);
     }
 }

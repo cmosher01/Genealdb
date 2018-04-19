@@ -34,7 +34,7 @@ public class Genealdb {
         final SessionFactory factoryNeo = new SessionFactory(configNeo, Event.class.getPackageName());
         if (args[0].equalsIgnoreCase("c")) {
             try {
-                factoryNeo.openSession().save(Sample.buildCitation());
+                factoryNeo.openSession().save(Sample.buildEntities());
             } finally {
                 factoryNeo.close();
             }
@@ -152,12 +152,12 @@ public class Genealdb {
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
         return sameness.getAre().stream()
-            .map(is -> expd(line(is.getCertainty(),is.getPersona(),is.getPersona().getCites(),is.getNotes())))
+            .map(is -> expd(line(
+                is.getCertainty(),
+                is.getPersona(),
+                is.getPersona().getCites(),
+                is.getNotes())))
             .collect(toList());
-    }
-
-    private static String prePage(final STGroupFile stg, final Expandable x) {
-        return stg.getInstanceOf("prepage").add("x", x).render();
     }
 
     private static Expandable getEventDisplay(final Event event) {
@@ -165,5 +165,12 @@ public class Genealdb {
             event.getPlayers().stream()
                 .map(role -> expd(line(role.getPersona()).withLabel(role.getDisplay())))
                 .collect(toList()));
+    }
+
+    private static String prePage(final STGroupFile stg, final Expandable x) {
+        return stg
+            .getInstanceOf("prepage")
+            .add("x", x)
+            .render();
     }
 }
