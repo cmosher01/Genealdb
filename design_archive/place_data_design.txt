@@ -1,0 +1,228 @@
+Places
+
+Goals: be able to answer these questions:
+
+1.  What place? (Identity)
+    Simple name/phrase:
+        "Hong Kong"
+        "Machu Picchu"
+        "The Isle of Man"
+        "The Geographic South Pole"
+    Names/phrases needing disambiguation:
+        "Portland (the city in Maine in the United States of America)"
+        "New York (the county, coextensive with the borough of Manhattan,
+            in the United States of America"
+        "San José (the municipality in the province of Romblon in the Philippines)"
+
+2.  Where is it? (Location)
+    Where would I go if I wanted to see it (the house, or property,
+    or something similar).
+    For genealogical purposes, the goal would usually be to find
+    the smallest region possible, ultimately a single point identified
+    by latitude/longitude coordinates.
+    It is unlikely that a large region (for example "Europe") would be
+    an ultimate goal for genealogical purposes; rather, the genealogist
+    is interested in "some place within Europe", with the understanding
+    that a more precise location is as yet unknown, and further research
+    would be necessary to arrive at the smallest region applicable to
+    a particular event.
+
+3.  What governmental body had jurisdiction? (Administration)
+    For genealogists, this would be where to search for official records of events
+    that took place in the region. This is related to the question of what
+    "type" of place is it, a town, a county, a city?"
+
+4.  When? (Temporality)
+    The time span of all names, locations, governments, etc., is relevant for genealogists.
+    For example, "Given the date of 1630, which government(s) would have had jurisdiction
+    over"
+
+5.  From traditional genealogy point of view, given a date and a pointer to the
+    most precise entity (geographical region/point) from the database, what are:
+    a. location and address;
+    b. the current name and jurisdictions of the place; and
+    c. the contemporary name and jurisdictions of the place.
+    Of these, the location and contemporary jurisdictions are of highest importance.
+    Note, if the given region is large enough (e.g., "somewhere in Earlville Village"),
+    the response may encompass multiple jurisdictions (two towns, two counties).
+
+6.  Other.
+    Disputed claims: more than one governmental body may have disputed claims
+        to a particular place. Genealogists might want to search both places for
+        records regarding events in the area.
+    Places don't (necessarily) fall into a simple hierarchy:
+        Earlville, a single village in New York, USA, lies in two
+        different counties, Madison and Chenango. New York City contains
+        5 counties. Virginia has cities that aren't in any county.
+    Differentiate between location and jurisdiction. For example, Roanoke Colony
+        existed on "Roanoke Island", 1585-1590, which has no relation to later
+        settlements by Virginians, even though both occupied
+        the same physical location named "Roanoke Island".
+    Genealogists may need to refer to other features, such as rivers
+        ("it happened on the James River") or the sea ("died at sea"),
+        but this is a rare occurrence.
+    Mistakes: recently, the Town of Easton Connecticut discovered a mistake
+        in the official land records that was a hundred years old, with the
+        effect that 3 houses that were thought to be in Easton for all those
+        years actually were not.
+    Streets and addresses help with identification and location.
+
+
+The primary (genealogical) goal of "place" is determining the point (or smallest region) of a event,
+relating to a person or (small) group of people who played roles in that event. Every data
+structure or algorithm should be to help achieve this goal, directly or indirectly.
+
+Secondary (genealogical) goals of "place" include determining the jurisdiction
+(over a geographical point/region) in order to help locate official records of
+the jurisdiction in charge.
+
+
+separating out the types of data related to places:
+
+1. Political
+2. Civil
+3. Geographical
+
+Political:
+Entity that creates and maintains official records for a given geographical region,
+which region may change over time.
+Examples: towns, villages, counties, colonies, countries, empires,
+"common heritage of humanity".
+A typical entity will have a name, which is only important to aid in its identification
+Although the name may change over time, tracking name changes of an individual entity is
+not a goal.
+Entities typically have superior and inferior relations with other entities, but
+in a graph, not necessarily in a hierarchy. Entities will typically have morphological
+relationships with other entities, of these types: transformation, merge, split,
+extraction, subsumption. And they will have a creation and possibly a destruction.
+Consider tracking time only in years. It would be much easier to model. The reasoning is
+that for political entities, events in the official records could extend beyond the
+official start/end day of the entity. It may be of interest for historical reasons to
+note the specific day, but for genealogical purposes, the year only might be enough.
+Geographical boundaries should be realistic, not necessarily pedantic; for example
+the 1620 Charter of New England claimed lands from "sea to sea", however it is unlikely
+that any land west of, say, the Great Lakes would actually have had any events relating
+to this claimed jurisdiction. So we should model a reasonable western boundary rather
+than a theoretically accurate one.
+GNIS class: "Civil"
+
+
+Civil:
+Large group of people taken as a set, inhabiting a given geographical region,
+which region may change over time. Size-wise, a group would be a community, not a family.
+Examples: "Mayflower Pilgrims", "Settlement at Roanoke", neighborhoods, CDPs, "Flatbush", communities
+A civil entity might not have a name.
+May have a name similar to the political entity that has jurisdiction over it.
+May be contained entirely within a political entity, or multiple entities.
+Or, may have no relation to the jurisdiction.
+Civil entities can help in identifying political entities.
+Civil entities can help with genealogical inductive reasoning about
+individual members of the group.
+An particular group can move across jurisdictions and locations over time, any yet still
+maintain an identity of its own, for example Romani people.
+Groups can have the same morphological changes as political entities.
+???Given all that, civil groups should be considered entirely separate from the "place" concept.
+GNIS class: "Populated Place"
+Populace
+
+Geographical:
+Region (or point) on the 2-dimensional surface of the Earth.
+Fixed in time; in order words, tracking changes in regions across time is
+not a goal.
+Its name is of limited importance, serving
+mostly to maximize the precision of the location.
+This could include postal addresses, streets, or other means of identifying a location
+(e.g., ZIP code boundaries).
+Includes metes and bounds or other land descriptions.
+As regions change over time, it's probably easiest to map each region as a complete
+region, rather than map a region plus a delta region.
+
+
+
+
+
+Fundamental data representation
+
+
+PoliticalDivision/CivilEntity node with properties:
+
+(:PoliticalDivision {name})
+(:Populace {name})
+(:Morph {year})
+
+Entity (Political or Civil) changes over time:
+
+(x:PoliticalDivision)<-[:FROM]-(:Morph{year})-[:TO]->(y:PoliticalDivision)
+
+Arity of From and To per Morph:
+
+Fx Ty  name              notes
+-----------------------------------
+ 0  N  multi-creation
+ 0  1  creation          case of 0 N
+ 0  0  no change         N/A
+ 1  0  destruction       case of N 0
+ N  0  multi-destruction
+
+ 1  N  split             x==y => extraction
+ 1  1  transform         x==y => no change
+ N  1  merger            x==y => subsumption
+
+ N  N  multi-transform?  N/A?
+
+
+
+Entity superiority
+
+(:Place)
+(:Transference {year})
+[:OF] [:FROM] [:TO]
+OF: the inferior entity(ies)
+FROM: the old superior entity(ies)
+TO: the new superior entity(ies)
+
+(x:Place)<-[:OF]-(:Transference)-[:FROM]->(yo:Place)
+                 (:Transference)-[:TO]->(yn:Place)
+
+Arity per Transference:
+Ox Fy Ty
+N  0  N gaining superior(s)
+N  N  0 losing superior(s)
+N  N  N both
+N  0  0 N/A
+
+(:GeographicalRegion {name, region})
+
+[:REGION {startYear}]
+
+(:PoliticalDivision)-[:REGION]->(:GeographicalRegion)
+
+(:Populace)-[:REGION]->(:GeographicalRegion)
+
+
+Possibility: Combine PoliticalDivision and Populace into one class "Place" with a type, similar to GNIS database.
+
+US Census Tiger files have "places" that are either incorporated (political entities) or not (census designated places).
+
+
+
+
+
+===============================================================================
+Use GIS system (QGIS, PostGIS, PostgreSQL) for geographical regions.
+
+(:Transfer {year, notes, cite})
+(:Transform {year, notes, cite})
+(:Place {name, region, notes, etc.})  <-- region is a URL into the GIS system
+
+[:OF]
+[:FROM]
+[:TO]
+
+
+
+(x:Place)<-[:OF]-(:Transfer)-[:FROM]->(yOld:Place)
+                 (:Transfer)-[:TO]->(yNew:Place)
+
+(x:Place)<-[:FROM]-(:Transform)-[:TO]->(y:Place)
+

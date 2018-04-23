@@ -71,11 +71,12 @@
   },
   "relationship.BECAME": {
     "caption": "{date}",
+    "shaft-width": "2px",
     "color": "#A5ABB6",
     "border-color": "#A5ABB6",
     "text-color-internal": "#FFFFFF"
   },
-  "relationship.CONTAINED": {
+  "relationship.IN": {
     "color": "#FFD86E",
     "border-color": "#EDBA39",
     "text-color-internal": "#999900",

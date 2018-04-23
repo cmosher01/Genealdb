@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb.model.entity;
+package nu.mine.mosher.genealdb.model.entity.source;
 
 
 
@@ -6,6 +6,8 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import java.net.URI;
 import java.util.*;
+import nu.mine.mosher.genealdb.model.entity.extract.Persona;
+import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.type.convert.UriConverter;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
@@ -37,11 +39,11 @@ public class Citation implements Comparable<Citation> {
         this.uri = uri;
     }
 
-    void addLink(final Persona persona) {
+    public void addLink(final Persona persona) {
         this.personae.add(Objects.requireNonNull(persona));
     }
 
-    void addLink(final Sameness sameness) {
+    public void addLink(final Sameness sameness) {
         this.matchings.add(Objects.requireNonNull(sameness));
     }
 

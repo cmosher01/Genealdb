@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import nu.mine.mosher.genealdb.model.Sample;
-import nu.mine.mosher.genealdb.model.entity.*;
+import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
+import nu.mine.mosher.genealdb.model.entity.extract.*;
+import nu.mine.mosher.genealdb.model.entity.place.Place;
+import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import nu.mine.mosher.genealdb.view.Expandable;
 import nu.mine.mosher.genealdb.view.Line;
 import org.neo4j.ogm.config.*;
@@ -15,13 +18,19 @@ import org.neo4j.ogm.session.SessionFactory;
 import org.stringtemplate.v4.STGroupFile;
 
 import static java.lang.Runtime.getRuntime;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static nu.mine.mosher.genealdb.view.Expandable.expd;
 import static nu.mine.mosher.genealdb.view.Line.blank;
 import static nu.mine.mosher.genealdb.view.Line.line;
 
 public class Genealdb {
+    private static final String[] packagesEntity = new String[] {
+        Citation.class.getPackageName(),
+        Place.class.getPackageName(),
+        Event.class.getPackageName(),
+        Sameness.class.getPackageName()
+    };
+
     public static void main(final String... args) throws IOException {
         if (args.length != 1) {
             throw new IllegalArgumentException("usage: genealdb c|s");
@@ -31,7 +40,7 @@ public class Genealdb {
 
         final ConfigurationSource configSourceNeo = new ClasspathConfigurationSource("ogm.properties");
         final Configuration configNeo = new Configuration.Builder(configSourceNeo).build();
-        final SessionFactory factoryNeo = new SessionFactory(configNeo, Event.class.getPackageName());
+        final SessionFactory factoryNeo = new SessionFactory(configNeo, packagesEntity);
         if (args[0].equalsIgnoreCase("c")) {
             try {
                 factoryNeo.openSession().save(Sample.buildEntities());
@@ -121,11 +130,11 @@ public class Genealdb {
                     getXrefDisplay(is.getSameness())))
             .collect(toList());
 
-        return expd(Line.blank(), asList(
+        return expd(Line.blank(),
                 expd(line(persona.getName())),
                 expd(line(persona.getCites()).withLabel("source")),
                 expd(blank().withLabel("extracted events"), re),
-                expd(blank().withLabel("cross references"), rx)));
+                expd(blank().withLabel("cross references"), rx));
     }
 
     private static Expandable buildView(final Citation citation) {
@@ -143,11 +152,11 @@ public class Genealdb {
                     getXrefDisplay(sameness)))
             .collect(Collectors.toList());
 
-        return expd(Line.blank(), asList(
+        return expd(Line.blank(),
                 expd(line(citation.getBrief()).withLabel("brief")),
                 expd(line(citation.getUri()).withLabel("full")),
                 expd(blank().withLabel("extracted events"), re),
-                expd(blank().withLabel("conclusions"), rx)));
+                expd(blank().withLabel("conclusions"), rx));
     }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {

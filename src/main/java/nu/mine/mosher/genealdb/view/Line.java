@@ -30,10 +30,6 @@ public class Line {
         return new Line(emptyList(), null);
     }
 
-    public static Line line(final String singletonString) {
-        return new Line(singletonList(singletonString), null);
-    }
-
     public static Line line(final Object singletonValue) {
         return new Line(singletonList(singletonValue), null);
     }
@@ -42,8 +38,8 @@ public class Line {
         return new Line(values, null);
     }
 
-    public static Line line(final Object... items) {
-        return new Line(Arrays.asList(items), null);
+    public static Line line(final Object... values) {
+        return new Line(Arrays.asList(values), null);
     }
 
     public Line withLabel(final Object label) {

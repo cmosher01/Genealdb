@@ -1,6 +1,7 @@
-package nu.mine.mosher.genealdb.model.entity;
+package nu.mine.mosher.genealdb.model.entity.conclude;
 
 import java.util.Objects;
+import nu.mine.mosher.genealdb.model.entity.extract.Persona;
 import nu.mine.mosher.genealdb.model.type.Certainty;
 import nu.mine.mosher.genealdb.model.type.convert.CertaintyConverter;
 import org.neo4j.ogm.annotation.*;

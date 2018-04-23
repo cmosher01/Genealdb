@@ -1,8 +1,10 @@
-package nu.mine.mosher.genealdb.model.entity;
+package nu.mine.mosher.genealdb.model.entity.extract;
 
 
 
 import java.util.*;
+import nu.mine.mosher.genealdb.model.entity.conclude.Is;
+import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import org.neo4j.ogm.annotation.Relationship;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
@@ -34,7 +36,7 @@ public class Persona {
         this.name = Objects.requireNonNull(name);
     }
 
-    void addLink(final Is is) {
+    public void addLink(final Is is) {
         this.xrefs.add(Objects.requireNonNull(is));
     }
 

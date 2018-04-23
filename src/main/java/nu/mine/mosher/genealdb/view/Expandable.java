@@ -24,6 +24,10 @@ public final class Expandable extends AbstractList {
         return new Expandable(line, items);
     }
 
+    public static Expandable expd(final Line line, final Expandable... items) {
+        return new Expandable(line, Arrays.asList(items));
+    }
+
     public Line getLine() {
         return this.line;
     }

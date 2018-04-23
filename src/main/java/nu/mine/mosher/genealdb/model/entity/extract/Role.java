@@ -1,4 +1,4 @@
-package nu.mine.mosher.genealdb.model.entity;
+package nu.mine.mosher.genealdb.model.entity.extract;
 
 
 
