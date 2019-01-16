@@ -1,7 +1,7 @@
 repositories {
     mavenCentral()
     maven {
-        url = URI.create('http://mosher.mine.nu/nexus/repository/maven-public/')
+        url = URI.create('https://mosher.mine.nu/nexus/repository/maven-public/')
     }
 }
 
@@ -11,6 +11,7 @@ apply plugin: 'application'
 dependencies {
     implementation group: 'org.nanohttpd', name: 'nanohttpd', version: 'latest.integration'
     implementation group: 'org.antlr', name: 'ST4', version: 'latest.release'
+    implementation group: 'net.postgis', name: 'postgis-jdbc', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
     implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
     implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'

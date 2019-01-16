@@ -10,12 +10,12 @@ page(x) ::= <<
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Data Web</title>
+    <meta charset="utf-8">
+    <title>Data Web</title>
 </head>
 <body>
-<pre><nav><a href="?">home</a></nav></pre>
-$x$
+    <pre><nav><a href="?">home</a></nav></pre>
+    $x$
 </body>
 </html>
 >>
@@ -63,4 +63,3 @@ $endif$
 
 
 pre(x) ::= "<pre>$\n$$x$</pre>"
-s(x,y) ::= "$x$$y$"

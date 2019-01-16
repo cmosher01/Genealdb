@@ -3,10 +3,10 @@ package nu.mine.mosher.genealdb.model.entity.extract;
 
 
 import java.util.*;
+import nu.mine.mosher.genealdb.model.entity.place.Place;
 import nu.mine.mosher.genealdb.model.type.Certainty;
 import nu.mine.mosher.genealdb.model.type.Day;
-import nu.mine.mosher.genealdb.model.type.convert.CertaintyConverter;
-import nu.mine.mosher.genealdb.model.type.convert.DayConverter;
+import nu.mine.mosher.genealdb.model.type.convert.*;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
 
@@ -21,13 +21,19 @@ public class Event implements Comparable<Event> {
 
     @Convert(DayConverter.class)
     private Day happenedOn;
-    private String place;
+
+    private Place place;
+
     private String type;
+
     private String description;
+
     @Convert(CertaintyConverter.class)
     private Certainty certaintyOfDate;
+
     @Convert(CertaintyConverter.class)
     private Certainty certaintyOfPlace;
+
     private String notes;
 
     private Long id;
@@ -38,9 +44,9 @@ public class Event implements Comparable<Event> {
     }
 
     public Event(
-        final Day happenedOn, final String place, final String type, final String description, final Certainty certaintyOfDate, final Certainty certaintyOfPlace, final String notes) {
+        final Day happenedOn, final Place place, final String type, final String description, final Certainty certaintyOfDate, final Certainty certaintyOfPlace, final String notes) {
         this.happenedOn = Objects.requireNonNull(happenedOn);
-        this.place = Objects.requireNonNull(place);
+        this.place = place;
         this.type = Objects.requireNonNull(type);
         this.description = Objects.requireNonNull(description);
         this.certaintyOfDate = Objects.requireNonNull(certaintyOfDate);
@@ -84,7 +90,7 @@ public class Event implements Comparable<Event> {
         return this.happenedOn;
     }
 
-    public String getPlace() {
+    public Place getPlace() {
         return this.place;
     }
 

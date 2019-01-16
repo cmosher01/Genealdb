@@ -38,9 +38,10 @@ public class Genealdb {
 
 
 
-        final ConfigurationSource configSourceNeo = new ClasspathConfigurationSource("ogm.properties");
-        final Configuration configNeo = new Configuration.Builder(configSourceNeo).build();
-        final SessionFactory factoryNeo = new SessionFactory(configNeo, packagesEntity);
+        final SessionFactory factoryNeo = createFactoryNeo();
+
+
+
         if (args[0].equalsIgnoreCase("c")) {
             try {
                 factoryNeo.openSession().save(Sample.buildEntities());
@@ -55,6 +56,12 @@ public class Genealdb {
 
         System.out.flush();
         System.err.flush();
+    }
+
+    private static SessionFactory createFactoryNeo() {
+        final ConfigurationSource configSourceNeo = new ClasspathConfigurationSource("ogm.properties");
+        final Configuration configNeo = new Configuration.Builder(configSourceNeo).build();
+        return new SessionFactory(configNeo, packagesEntity);
     }
 
     private static void serve(final SessionFactory factoryNeo) throws IOException {
@@ -72,14 +79,17 @@ public class Genealdb {
                 final Class cls = getClassParam(http, Citation.class);
                 final Long id = getIdParam(http, idDefault);
 
-                final Object entity = neo.load(cls, id, 6);
+                final Object object = neo.load(cls, id, 6);
                 final Expandable view;
                 if (cls.equals(Citation.class)) {
-                    final Citation citation = (Citation)entity;
-                    view = buildView(citation);
+                    final Citation entity = (Citation)object;
+                    view = buildView(entity);
                 } else if (cls.equals(Persona.class)) {
-                    final Persona persona = (Persona)entity;
-                    view = buildView(persona);
+                    final Persona entity = (Persona)object;
+                    view = buildView(entity);
+                } else if (cls.equals(Place.class)) {
+                    final Place entity = (Place)object;
+                    view = buildView(entity);
                 } else {
                     view = Expandable.expd(blank());
                 }
@@ -157,6 +167,27 @@ public class Genealdb {
                 expd(line(citation.getUri()).withLabel("full")),
                 expd(blank().withLabel("extracted events"), re),
                 expd(blank().withLabel("conclusions"), rx));
+    }
+
+    private static Expandable buildView(final Place place) {
+        final List<Expandable> re = persona.getRoles().stream()
+            .map(Role::getEvent)
+            .distinct()
+            .sorted()
+            .map(Genealdb::getEventDisplay)
+            .collect(Collectors.toList());
+
+        final List<Expandable> rx = persona.getXrefs().stream()
+            .map(is ->
+                expd(line(is.getSameness().getRationale()).withLabel(is.getSameness().getCites()),
+                    getXrefDisplay(is.getSameness())))
+            .collect(toList());
+
+        return expd(Line.blank(),
+            expd(line(persona.getName())),
+            expd(line(persona.getCites()).withLabel("source")),
+            expd(blank().withLabel("extracted events"), re),
+            expd(blank().withLabel("cross references"), rx));
     }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.neo4j.ogm.annotation.Relationship;
 
-public class Transfer {
+public class Transfer implements Comparable<Transfer> {
     @Relationship(type = "OF")
     private Set<Place> ofInferior = new HashSet<>();
     @Relationship(type = "FROM")
@@ -42,5 +42,10 @@ public class Transfer {
         this.toSuperior.add(place);
         place.addGain(this);
         return this;
+    }
+
+    @Override
+    public int compareTo(final Transfer that) {
+        return Integer.compare(this.year, that.year);
     }
 }

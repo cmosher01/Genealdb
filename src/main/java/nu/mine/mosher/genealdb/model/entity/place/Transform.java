@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.neo4j.ogm.annotation.Relationship;
 
-public class Transform {
+public class Transform implements Comparable<Transform> {
     @Relationship(type = "FROM")
     private Set<Place> from = new HashSet<>();
     @Relationship(type = "TO")
@@ -34,5 +34,10 @@ public class Transform {
         this.to.add(to);
         to.addCtor(this);
         return this;
+    }
+
+    @Override
+    public int compareTo(final Transform that) {
+        return Integer.compare(this.year, that.year);
     }
 }
