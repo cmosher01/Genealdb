@@ -34,6 +34,9 @@ public class Place {
 
     private Long id;
 
+    public Place() {
+    }
+
     public Place(final String name, final Point location) {
         this.name = name;
         this.location = location;

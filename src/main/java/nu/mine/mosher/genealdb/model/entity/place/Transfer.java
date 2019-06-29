@@ -17,6 +17,9 @@ public class Transfer implements Comparable<Transfer> {
 
     private Long id;
 
+    public Transfer() {
+    }
+
     public Transfer(final int year) {
         this(year, "");
     }

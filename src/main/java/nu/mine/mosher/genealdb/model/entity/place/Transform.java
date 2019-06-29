@@ -15,6 +15,9 @@ public class Transform implements Comparable<Transform> {
 
     private Long id;
 
+    public Transform() {
+    }
+
     public Transform(final int year) {
         this(year, "");
     }

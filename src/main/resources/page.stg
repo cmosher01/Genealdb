@@ -8,13 +8,18 @@ prepage(x) ::= "$page(pre(exp(x)))$"
 
 page(x) ::= <<
 <!doctype html>
-<html lang="en">
+<html lang="en" class="fontFeatures unicodeWebFonts solarizedLight">
 <head>
     <meta charset="utf-8">
     <title>Data Web</title>
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/reset.css");
+        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/fonts.css");
+        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/solarized.css");
+    </style>
 </head>
 <body>
-    <pre><nav><a href="?">home</a></nav></pre>
+    <nav><a href="?">home</a></nav>
     $x$
 </body>
 </html>
@@ -62,4 +67,4 @@ $endif$
 
 
 
-pre(x) ::= "<pre>$\n$$x$</pre>"
+pre(x) ::= "<div style='white-space:pre'>$\n$$x$</div>"

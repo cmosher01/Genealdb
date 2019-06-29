@@ -87,9 +87,9 @@ public class Genealdb {
                 } else if (cls.equals(Persona.class)) {
                     final Persona entity = (Persona)object;
                     view = buildView(entity);
-                } else if (cls.equals(Place.class)) {
-                    final Place entity = (Place)object;
-                    view = buildView(entity);
+//                } else if (cls.equals(Place.class)) {
+//                    final Place entity = (Place)object;
+//                    view = buildView(entity);
                 } else {
                     view = Expandable.expd(blank());
                 }
@@ -169,26 +169,27 @@ public class Genealdb {
                 expd(blank().withLabel("conclusions"), rx));
     }
 
-    private static Expandable buildView(final Place place) {
-        final List<Expandable> re = persona.getRoles().stream()
-            .map(Role::getEvent)
-            .distinct()
-            .sorted()
-            .map(Genealdb::getEventDisplay)
-            .collect(Collectors.toList());
-
-        final List<Expandable> rx = persona.getXrefs().stream()
-            .map(is ->
-                expd(line(is.getSameness().getRationale()).withLabel(is.getSameness().getCites()),
-                    getXrefDisplay(is.getSameness())))
-            .collect(toList());
-
-        return expd(Line.blank(),
-            expd(line(persona.getName())),
-            expd(line(persona.getCites()).withLabel("source")),
-            expd(blank().withLabel("extracted events"), re),
-            expd(blank().withLabel("cross references"), rx));
-    }
+    // TODO implement Place handling (use persona impl as a starting point)
+//    private static Expandable buildView(final Place place) {
+//        final List<Expandable> re = persona.getRoles().stream()
+//            .map(Role::getEvent)
+//            .distinct()
+//            .sorted()
+//            .map(Genealdb::getEventDisplay)
+//            .collect(Collectors.toList());
+//
+//        final List<Expandable> rx = persona.getXrefs().stream()
+//            .map(is ->
+//                expd(line(is.getSameness().getRationale()).withLabel(is.getSameness().getCites()),
+//                    getXrefDisplay(is.getSameness())))
+//            .collect(toList());
+//
+//        return expd(Line.blank(),
+//            expd(line(persona.getName())),
+//            expd(line(persona.getCites()).withLabel("source")),
+//            expd(blank().withLabel("extracted events"), re),
+//            expd(blank().withLabel("cross references"), rx));
+//    }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
         return sameness.getAre().stream()

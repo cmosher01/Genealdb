@@ -10,6 +10,9 @@ import static java.util.Objects.isNull;
 public class PointConverter implements CompositeAttributeConverter<Point> {
     @Override
     public Map<String, ?> toGraphProperties(final Point value) {
+        if (value == null) {
+            return Map.of("longitude", 0, "latitude", 0);
+        }
         return Map.of("longitude", value.getX(), "latitude", value.getY());
     }
 
