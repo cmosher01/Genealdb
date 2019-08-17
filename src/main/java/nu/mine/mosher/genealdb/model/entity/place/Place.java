@@ -3,16 +3,19 @@ package nu.mine.mosher.genealdb.model.entity.place;
 import java.net.URI;
 import java.util.TreeSet;
 import java.util.Set;
-import nu.mine.mosher.genealdb.model.type.convert.PointConverter;
+
+import com.google.openlocationcode.OpenLocationCode;
+import nu.mine.mosher.genealdb.model.type.convert.OpenLocationCodeConverter;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
-import org.postgis.Point;
 
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
 @NodeEntity
 public class Place {
+    public static final int CODE_PRECISION_GENEALOGICAL = 12;
+
     @Relationship(type = "TO", direction = INCOMING)
     private Set<Transform> construction = new TreeSet<>();
     @Relationship(type = "FROM", direction = INCOMING)
@@ -29,15 +32,15 @@ public class Place {
 
     private URI region; // URL in GIS DB
 
-    @Convert(PointConverter.class)
-    private Point location; // simple lat./long. (redundant/summary of info in GIS)
+    @Convert(OpenLocationCodeConverter.class)
+    private OpenLocationCode location; // (redundant/summary of info in GIS)
 
     private Long id;
 
     public Place() {
     }
 
-    public Place(final String name, final Point location) {
+    public Place(final String name, final OpenLocationCode location) {
         this.name = name;
         this.location = location;
     }
@@ -62,7 +65,7 @@ public class Place {
         this.gains.add(place);
     }
 
-    public double distance(final Place that) {
-        return this.location.distance(that.location);
-    }
+//    public double distance(final Place that) {
+//        return this.location.distance(that.location);
+//    }
 }

@@ -2,6 +2,8 @@ package nu.mine.mosher.genealdb.model;
 
 import java.net.URI;
 import java.util.Set;
+
+import com.google.openlocationcode.OpenLocationCode;
 import nu.mine.mosher.genealdb.model.entity.conclude.Is;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.*;
@@ -9,7 +11,6 @@ import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import nu.mine.mosher.genealdb.model.type.Certainty;
 import nu.mine.mosher.genealdb.model.type.Day;
-import org.postgis.Point;
 
 import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
@@ -159,7 +160,7 @@ public class Sample {
         return Set.of(myRootPedigreeDatabase, driversLicense, birthCertificate);
     }
 
-    private static Point buildLatLong(final double latitude, final double longitude) {
-        return new Point(longitude, latitude);
+    private static OpenLocationCode buildLatLong(final double latitude, final double longitude) {
+        return new OpenLocationCode(longitude, latitude, Place.CODE_PRECISION_GENEALOGICAL);
     }
 }
