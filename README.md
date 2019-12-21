@@ -1,31 +1,13 @@
-# genealdb
+# Genealogy Research Database
 
-```
-Graph database model for genealogical research data.
+Copyright © 2018–2019, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com
 
-source <--- citation
-  |            ^
-  |            |
-  |            |
-  |         persona <--- cross-reference
-  |            |
-  |            |
-  v            v
-place  <---  event
+[![License](https://img.shields.io/github/license/cmosher01/Genealdb.svg)](https://www.gnu.org/licenses/gpl.html)
+[![Latest Release](https://img.shields.io/github/release-pre/cmosher01/Genealdb.svg)](https://github.com/cmosher01/Genealdb/releases/latest)
+[![Build Status](https://travis-ci.com/cmosher01/Genealdb.svg?branch=master)](https://travis-ci.com/cmosher01/Genealdb)
+[![Build status](https://ci.appveyor.com/api/projects/status/TODO?svg=true)](https://ci.appveyor.com/project/cmosher01/Genealdb)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 
-```
+![image](./genealdb.svg)
 
-Copyright © 2018, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+This is designed to be a replacement for [GEDCOM](https://www.familysearch.org/wiki/en/GEDCOM).
