@@ -1,10 +1,10 @@
 package nu.mine.mosher.genealdb.model.type.convert;
 
-import java.util.*;
-
 import com.google.openlocationcode.OpenLocationCode;
 import org.apache.commons.lang3.StringUtils;
-import org.neo4j.ogm.typeconversion.*;
+import org.neo4j.ogm.typeconversion.AttributeConverter;
+
+import java.util.Objects;
 
 public class OpenLocationCodeConverter implements AttributeConverter<OpenLocationCode, String> {
     @Override

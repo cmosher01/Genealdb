@@ -1,8 +1,8 @@
 package nu.mine.mosher.genealdb.model.entity.place;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.neo4j.ogm.annotation.Relationship;
+
+import java.util.*;
 
 public class Transform implements Comparable<Transform> {
     @Relationship(type = "FROM")
@@ -13,8 +13,12 @@ public class Transform implements Comparable<Transform> {
     private int year;
     private String notes;
 
+    @SuppressWarnings("unused")
     private Long id;
 
+
+
+    @SuppressWarnings("unused")
     public Transform() {
     }
 

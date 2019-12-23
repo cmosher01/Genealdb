@@ -1,11 +1,11 @@
 package nu.mine.mosher.genealdb.model.entity.extract;
 
 
-
-import java.util.*;
 import nu.mine.mosher.genealdb.model.entity.conclude.Is;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import org.neo4j.ogm.annotation.Relationship;
+
+import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Collections.unmodifiableSet;
@@ -23,10 +23,12 @@ public class Persona {
     // For identification purposes only, not for assertion of correctness.
     private String name;
 
+    @SuppressWarnings("unused")
     private Long id;
 
 
 
+    @SuppressWarnings("unused")
     public Persona() {
     }
 

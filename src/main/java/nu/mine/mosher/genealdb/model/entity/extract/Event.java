@@ -1,14 +1,13 @@
 package nu.mine.mosher.genealdb.model.entity.extract;
 
 
-
-import java.util.*;
 import nu.mine.mosher.genealdb.model.entity.place.Place;
-import nu.mine.mosher.genealdb.model.type.Certainty;
-import nu.mine.mosher.genealdb.model.type.Day;
+import nu.mine.mosher.genealdb.model.type.*;
 import nu.mine.mosher.genealdb.model.type.convert.*;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Collections.unmodifiableSet;
@@ -36,10 +35,12 @@ public class Event implements Comparable<Event> {
 
     private String notes;
 
+    @SuppressWarnings("unused")
     private Long id;
 
 
 
+    @SuppressWarnings("unused")
     public Event() {
     }
 

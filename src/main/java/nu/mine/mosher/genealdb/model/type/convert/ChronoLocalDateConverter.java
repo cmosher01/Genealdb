@@ -1,10 +1,10 @@
 package nu.mine.mosher.genealdb.model.type.convert;
 
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.Chronology;
-import java.time.temporal.ChronoField;
-import java.util.Map;
 import org.neo4j.ogm.typeconversion.CompositeAttributeConverter;
+
+import java.time.chrono.*;
+import java.time.temporal.ChronoField;
+import java.util.*;
 
 public class ChronoLocalDateConverter implements CompositeAttributeConverter<ChronoLocalDate> {
     @Override
@@ -14,7 +14,12 @@ public class ChronoLocalDateConverter implements CompositeAttributeConverter<Chr
         final long day = chronoLocalDate.get(ChronoField.DAY_OF_MONTH);
         final String chronologyId = chronoLocalDate.getChronology().getId();
 
-        return Map.of("year", yearProleptic, "month", month, "day", day, "chronology", chronologyId);
+        final Map map = new HashMap();
+        map.put("year", yearProleptic);
+        map.put("month", month);
+        map.put("day", day);
+        map.put("chronology", chronologyId);
+        return map;
     }
 
     @Override

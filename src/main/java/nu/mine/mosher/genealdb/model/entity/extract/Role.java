@@ -1,12 +1,12 @@
 package nu.mine.mosher.genealdb.model.entity.extract;
 
 
-
-import java.util.Objects;
 import nu.mine.mosher.genealdb.model.type.Certainty;
 import nu.mine.mosher.genealdb.model.type.convert.CertaintyConverter;
 import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import java.util.Objects;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
@@ -24,10 +24,12 @@ public class Role {
     private Certainty certainty;
     private String notes;
 
+    @SuppressWarnings("unused")
     private Long id;
 
 
 
+    @SuppressWarnings("unused")
     public Role() {
     }
 

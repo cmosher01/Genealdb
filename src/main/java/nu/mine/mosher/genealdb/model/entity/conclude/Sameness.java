@@ -1,8 +1,9 @@
 package nu.mine.mosher.genealdb.model.entity.conclude;
 
-import java.util.*;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import org.neo4j.ogm.annotation.Relationship;
+
+import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Collections.unmodifiableSet;
@@ -14,10 +15,12 @@ public class Sameness {
 
     private String rationale;
 
+    @SuppressWarnings("unused")
     private Long id;
 
 
 
+    @SuppressWarnings("unused")
     public Sameness() {
     }
 

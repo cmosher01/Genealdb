@@ -2,11 +2,9 @@ package nu.mine.mosher.genealdb.view;
 
 import java.util.*;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes", "unused"})
 public class Line {
     /**
      * label, or null

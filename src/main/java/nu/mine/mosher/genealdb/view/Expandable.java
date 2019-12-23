@@ -2,9 +2,9 @@ package nu.mine.mosher.genealdb.view;
 
 import java.util.*;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 
+@SuppressWarnings({"rawtypes", "unused"})
 public final class Expandable extends AbstractList {
     private final Line line;
     private final List<Expandable> items;

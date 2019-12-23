@@ -1,8 +1,8 @@
 repositories {
+    jcenter()
     mavenCentral()
 }
 
-apply plugin: 'java'
 apply plugin: 'application'
 
 dependencies {
@@ -14,7 +14,8 @@ dependencies {
     implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
 
     implementation group: 'org.neo4j', name: 'neo4j-ogm-core', version: 'latest.release'
-    runtimeOnly group: 'org.neo4j', name: 'neo4j-ogm-bolt-driver', version: 'latest.release'
+    implementation group: 'org.neo4j', name: 'neo4j-ogm-bolt-driver', version: 'latest.release'
+
     runtimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: 'latest.release'
 
 
@@ -36,5 +37,5 @@ test {
 
 group = 'nu.mine.mosher.gedcom'
 mainClassName = 'nu.mine.mosher.genealdb.Genealdb'
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_9
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 version = '1.0.0-SNAPSHOT'

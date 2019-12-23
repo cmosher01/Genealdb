@@ -1,14 +1,12 @@
 package nu.mine.mosher.genealdb.model.type.convert;
 
+import nu.mine.mosher.genealdb.model.type.Day;
+import org.neo4j.ogm.typeconversion.*;
+import org.slf4j.*;
+
 import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-import nu.mine.mosher.genealdb.model.type.Day;
-import org.neo4j.ogm.typeconversion.CompositeAttributeConverter;
-import org.neo4j.ogm.typeconversion.EnumStringConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
 public class DayConverter implements CompositeAttributeConverter<Day> {
     private static final Logger LOG = LoggerFactory.getLogger(DayConverter.class);

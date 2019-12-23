@@ -2,33 +2,33 @@ package nu.mine.mosher.genealdb;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 import nu.mine.mosher.genealdb.model.Sample;
 import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.Place;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
-import nu.mine.mosher.genealdb.view.Expandable;
-import nu.mine.mosher.genealdb.view.Line;
-import org.neo4j.ogm.config.*;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+import nu.mine.mosher.genealdb.view.*;
+import org.neo4j.driver.GraphDatabase;
+import org.neo4j.ogm.driver.Driver;
+import org.neo4j.ogm.drivers.bolt.driver.BoltDriver;
+import org.neo4j.ogm.session.*;
 import org.stringtemplate.v4.STGroupFile;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Runtime.getRuntime;
 import static java.util.stream.Collectors.toList;
 import static nu.mine.mosher.genealdb.view.Expandable.expd;
-import static nu.mine.mosher.genealdb.view.Line.blank;
-import static nu.mine.mosher.genealdb.view.Line.line;
+import static nu.mine.mosher.genealdb.view.Line.*;
 
 public class Genealdb {
     private static final String[] packagesEntity = new String[] {
-        Citation.class.getPackageName(),
-        Place.class.getPackageName(),
-        Event.class.getPackageName(),
-        Sameness.class.getPackageName()
+        Citation.class.getPackage().getName(),
+        Place.class.getPackage().getName(),
+        Event.class.getPackage().getName(),
+        Sameness.class.getPackage().getName()
     };
 
     public static void main(final String... args) throws IOException {
@@ -38,8 +38,8 @@ public class Genealdb {
 
 
 
-        final SessionFactory factoryNeo = createFactoryNeo();
-
+        final Driver driverNeo = new BoltDriver(GraphDatabase.driver("bolt://localhost"));
+        final SessionFactory factoryNeo = new SessionFactory(driverNeo, packagesEntity);
 
 
         if (args[0].equalsIgnoreCase("c")) {
@@ -47,39 +47,35 @@ public class Genealdb {
                 factoryNeo.openSession().save(Sample.buildEntities());
             } finally {
                 factoryNeo.close();
+                driverNeo.close();
             }
         } else if (args[0].equalsIgnoreCase("s")) {
             serve(factoryNeo);
         }
 
-
-
         System.out.flush();
         System.err.flush();
-    }
-
-    private static SessionFactory createFactoryNeo() {
-        final ConfigurationSource configSourceNeo = new ClasspathConfigurationSource("ogm.properties");
-        final Configuration configNeo = new Configuration.Builder(configSourceNeo).build();
-        return new SessionFactory(configNeo, packagesEntity);
     }
 
     private static void serve(final SessionFactory factoryNeo) throws IOException {
         final Session neo = factoryNeo.openSession();
 
-        final Collection<Citation> citations = neo.loadAll(Citation.class, 1);
-        final Citation citDefault = citations.iterator().next();
-        final Long idDefault = citDefault.getId();
+        final Long idDefault = getArbitraryCitationId(neo);
+        if (Objects.isNull(idDefault)) {
+            factoryNeo.close();
+            return;
+        }
 
         final STGroupFile stg = new STGroupFile("page.stg");
 
         final NanoHTTPD server = new NanoHTTPD(8080) {
             @Override
+            @SuppressWarnings({"rawtypes", "unchecked"})
             public Response serve(final IHTTPSession http) {
                 final Class cls = getClassParam(http, Citation.class);
                 final Long id = getIdParam(http, idDefault);
 
-                final Object object = neo.load(cls, id, 6);
+                final Object object = neo.load(cls, id, 2);
                 final Expandable view;
                 if (cls.equals(Citation.class)) {
                     final Citation entity = (Citation)object;
@@ -106,6 +102,17 @@ public class Genealdb {
         }));
 }
 
+    private static Long getArbitraryCitationId(Session neo) {
+        try {
+            final Collection<Citation> citations = neo.loadAll(Citation.class, 1);
+            final Citation citDefault = citations.iterator().next();
+            return citDefault.getId();
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static Long getIdParam(final IHTTPSession http, final Long idDefault) {
         final List<String> id = http.getParameters().get("id");
         if (id == null || id.isEmpty()) {
@@ -114,6 +121,7 @@ public class Genealdb {
         return Long.valueOf(id.get(0));
     }
 
+    @SuppressWarnings("rawtypes")
     private static Class getClassParam(final IHTTPSession http, final Class classDefault) {
         final List<String> entity = http.getParameters().get("entity");
         if (entity == null || entity.isEmpty()) {

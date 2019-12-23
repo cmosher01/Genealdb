@@ -1,11 +1,11 @@
 package nu.mine.mosher.genealdb.model.type;
 
 import com.google.common.base.Strings;
+
 import java.time.DateTimeException;
 import java.time.chrono.*;
 import java.time.format.*;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.*;
 import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
@@ -18,9 +18,16 @@ public class Day implements Comparable<Day> {
     public static final Chronology DEFAULT_CHRONOLOGY = Chronology.ofLocale(Locale.getDefault());
 
 
-    //@formatter:off
-    private static final Set<ChronoUnit> VALID_PRECISIONS = Set.of(ChronoUnit.FOREVER,ChronoUnit.YEARS,ChronoUnit.MONTHS,ChronoUnit.DAYS);
-    //@formatter:on
+    private static final Set<ChronoUnit> VALID_PRECISIONS;
+    static {
+        final HashSet<ChronoUnit> s = new HashSet<>();
+        s.add(ChronoUnit.FOREVER);
+        s.add(ChronoUnit.YEARS);
+        s.add(ChronoUnit.MONTHS);
+        s.add(ChronoUnit.DAYS);
+        VALID_PRECISIONS = Collections.unmodifiableSet(s);
+
+    }
 
     private final ChronoLocalDate date;
     private final boolean circa;

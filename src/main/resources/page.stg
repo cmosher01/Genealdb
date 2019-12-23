@@ -13,9 +13,17 @@ page(x) ::= <<
     <meta charset="utf-8">
     <title>Data Web</title>
     <style>
-        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/reset.css");
-        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/fonts.css");
-        @import url("https://cdn.jsdelivr.net/gh/cmosher01/PlainWebCss@master/src/main/resources/css/solarized.css");
+        @import url("https://raw.githack.com/cmosher01/PlainWebCss/master/src/main/resources/css/reset.css");
+        @import url("https://raw.githack.com/cmosher01/PlainWebCss/master/src/main/resources/css/solarized.css");
+        @import url("https://mosher.mine.nu/uniwebfonts/css/fonts.css");
+        body {
+            margin: 2ex 2rem 2ex 2rem;
+        }
+
+        a:hover {
+            background-color: var(--sol-base2);
+            color: var(--sol-orange);
+        }
     </style>
 </head>
 <body>
@@ -38,7 +46,7 @@ $endif$
 
 line(x) ::= <%
 $if (x.label)$
-    $val(x.label)$
+    <b>$val(x.label)$</b>
     :
     $\ $
 $endif$

@@ -1,7 +1,8 @@
 package nu.mine.mosher.genealdb.model.type.convert;
 
-import java.net.URI;
 import org.neo4j.ogm.typeconversion.AttributeConverter;
+
+import java.net.URI;
 
 public class UriConverter implements AttributeConverter<URI, String> {
     @Override

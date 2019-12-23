@@ -1,14 +1,12 @@
 package nu.mine.mosher.genealdb.model.entity.place;
 
-import java.net.URI;
-import java.util.TreeSet;
-import java.util.Set;
-
 import com.google.openlocationcode.OpenLocationCode;
 import nu.mine.mosher.genealdb.model.type.convert.OpenLocationCodeConverter;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import java.net.URI;
+import java.util.*;
 
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
@@ -35,8 +33,12 @@ public class Place {
     @Convert(OpenLocationCodeConverter.class)
     private OpenLocationCode location; // (redundant/summary of info in GIS)
 
+    @SuppressWarnings("unused")
     private Long id;
 
+
+
+    @SuppressWarnings("unused")
     public Place() {
     }
 
@@ -68,4 +70,10 @@ public class Place {
 //    public double distance(final Place that) {
 //        return this.location.distance(that.location);
 //    }
+
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

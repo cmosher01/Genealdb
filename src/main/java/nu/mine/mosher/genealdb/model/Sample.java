@@ -1,16 +1,14 @@
 package nu.mine.mosher.genealdb.model;
 
-import java.net.URI;
-import java.util.Set;
-
 import com.google.openlocationcode.OpenLocationCode;
-import nu.mine.mosher.genealdb.model.entity.conclude.Is;
+import nu.mine.mosher.genealdb.model.entity.conclude.*;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.*;
-import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
-import nu.mine.mosher.genealdb.model.type.Certainty;
-import nu.mine.mosher.genealdb.model.type.Day;
+import nu.mine.mosher.genealdb.model.type.*;
+
+import java.net.URI;
+import java.util.*;
 
 import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
@@ -157,7 +155,11 @@ public class Sample {
         //pConnCol.became(pConn, LocalDate.of(1788, 1, 9));
 
 
-        return Set.of(myRootPedigreeDatabase, driversLicense, birthCertificate);
+        final HashSet set = new HashSet();
+        set.add(myRootPedigreeDatabase);
+        set.add(driversLicense);
+        set.add(birthCertificate);
+        return set;
     }
 
     private static OpenLocationCode buildLatLong(final double latitude, final double longitude) {
