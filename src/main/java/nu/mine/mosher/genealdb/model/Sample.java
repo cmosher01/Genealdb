@@ -16,33 +16,47 @@ public class Sample {
     public static Set buildEntities() {
         final Place svUsa = new Place("United States of America", buildLatLong(44.674000, -103.853100));
 
+        final PlaceChange constitutionUsa = new PlaceChange(1788, "Constitution of USA");
+
         final Place stNy = new Place("State of New York", buildLatLong(42.9212335, -75.5965432));
-        new Transfer(1788).of(stNy).to(svUsa);
+        new Transfer().of(stNy).to(svUsa).during(constitutionUsa);
         final Place stVa = new Place("Commonwealth of Virginia", buildLatLong(37.5108711, -78.6663566));
-        new Transfer(1788).of(stVa).to(svUsa);
+        new Transfer().of(stVa).to(svUsa).during(constitutionUsa);
         final Place stCt = new Place("State of Connecticut", buildLatLong(41.5751642, -72.7382577));
-        new Transfer(1788).of(stCt).to(svUsa);
+        new Transfer().of(stCt).to(svUsa).during(constitutionUsa);
 
+        final PlaceChange foundedChenango = new PlaceChange(1798, "Founding of Chenango County");
         final Place coChenango = new Place("County of Chenango", null);
-        new Transform(1798).to(coChenango);
-        new Transfer(1798).of(coChenango).to(stNy);
+        new Transform().to(coChenango).during(foundedChenango);
+        new Transfer().of(coChenango).to(stNy).during(foundedChenango);
+
+        final PlaceChange splitChenango = new PlaceChange(1806, "Chenango County split");
         final Place coMadison = new Place("County of Madison", null);
-        new Transform(1806).from(coChenango).to(coChenango).to(coMadison);
-        new Transfer(1806).of(coMadison).to(stNy);
+        new Transform().from(coChenango).to(coChenango).to(coMadison).during(splitChenango);
+        new Transfer().of(coMadison).to(stNy).during(splitChenango);
 
+        final PlaceChange foundedEarlville = new PlaceChange(1792, "Founding of Earlville (Madison Forks)");
         final Place pMadisonForks = new Place("Madison Forks", null);
-        new Transform(1792).to(pMadisonForks);
-        new Transfer(1796).of(pMadisonForks).to(coChenango);
-        new Transfer(1806).of(pMadisonForks).to(coMadison);
+        new Transform().to(pMadisonForks).during(foundedEarlville);
+        new Transfer().of(pMadisonForks).to(coChenango).during(foundedChenango);
+        new Transfer().of(pMadisonForks).to(coMadison).during(splitChenango);
+        final PlaceChange nameEarlville = new PlaceChange(1835, "Rename Madison Forks to Earlville (upon completion of Chenango Canal to honor Jonas Earl)");
         final Place pEarlville = new Place("Earlville", null);
-        new Transform(1835).from(pMadisonForks).to(pEarlville);
+        new Transform().from(pMadisonForks).to(pEarlville).during(nameEarlville);
+        final PlaceChange incEarlville = new PlaceChange(1887, "Incorporation of Earlville");
         final Place vilEarlville = new Place("Village of Earlville", null);
-        new Transform(1887).from(pEarlville).to(vilEarlville);
+        new Transform().from(pEarlville).to(vilEarlville).during(incEarlville);
 
+        final PlaceChange indepenentCitiesVirginia = new PlaceChange(1871, "1871 Virginia Constitution");
         final Place radford = new Place("Radford, VA", buildLatLong(37.1275, -80.569444));
-        new Transform(1830).to(radford);
-        new Transfer(1830).of(radford).to(stVa);
+        new Transform().to(radford).during(indepenentCitiesVirginia);
+        new Transfer().of(radford).to(stVa).during(indepenentCitiesVirginia);
+
+        final PlaceChange incPulaski = new PlaceChange(1886, "Incorporation of Pulaski");
         final Place pulaski = new Place("Pulaski, VA", buildLatLong(37.05, -80.772222));
+        new Transform().to(pulaski).during(incPulaski);
+        new Transfer().of(pulaski).to(stVa).during(incPulaski);
+
         final Place brookPine = new Place("41 Brook Pine Drive, Shelton, CT", buildLatLong(41.316409, -73.126310));
 
 

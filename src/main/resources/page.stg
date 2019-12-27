@@ -19,7 +19,9 @@ page(x) ::= <<
         body {
             margin: 2ex 2rem 2ex 2rem;
         }
-
+        pre {
+            font-family: inherit;
+        }
         a:hover {
             background-color: var(--sol-base2);
             color: var(--sol-orange);
@@ -46,20 +48,14 @@ $endif$
 
 line(x) ::= <%
 $if (x.label)$
-    <b>$val(x.label)$</b>
-    :
-    $\ $
+    <b>$val(x.label)$</b>:$\ $
 $endif$
 $x.values:val(); separator=" "$
 %>
 
 
 
-val(x) ::= "$a(x)$"
-
-
-
-a(x) ::= <%
+val(x) ::= <%
 $if (x.id)$
     <a href="?entity=$x.class.name$&id=$x.id$">
         $x$
@@ -75,4 +71,4 @@ $endif$
 
 
 
-pre(x) ::= "<div style='white-space:pre'>$\n$$x$</div>"
+pre(x) ::= "<pre>$\n$$x$</pre>"

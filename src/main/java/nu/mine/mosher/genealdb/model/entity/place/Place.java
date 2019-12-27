@@ -15,16 +15,16 @@ public class Place {
     public static final int CODE_PRECISION_GENEALOGICAL = 12;
 
     @Relationship(type = "TO", direction = INCOMING)
-    private Set<Transform> construction = new TreeSet<>();
+    private Set<Transform> construction = new HashSet<>();
     @Relationship(type = "FROM", direction = INCOMING)
-    private Set<Transform> destruction = new TreeSet<>();
+    private Set<Transform> destruction = new HashSet<>();
 
     @Relationship(type = "OF", direction = INCOMING)
-    private Set<Transfer> superiors = new TreeSet<>();
+    private Set<Transfer> superiors = new HashSet<>();
     @Relationship(type = "FROM", direction = INCOMING)
-    private Set<Transfer> losses = new TreeSet<>();
+    private Set<Transfer> losses = new HashSet<>();
     @Relationship(type = "TO", direction = INCOMING)
-    private Set<Transfer> gains = new TreeSet<>();
+    private Set<Transfer> gains = new HashSet<>();
 
     private String name;
 
@@ -71,6 +71,38 @@ public class Place {
 //        return this.location.distance(that.location);
 //    }
 
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public URI getRegion() {
+        return this.region;
+    }
+
+    public Set<Transform> getConstruction() {
+        return Collections.unmodifiableSet(this.construction);
+    }
+
+    public Set<Transform> getDestruction() {
+        return Collections.unmodifiableSet(this.destruction);
+    }
+
+    public Set<Transfer> getSuperiors() {
+        return Collections.unmodifiableSet(this.superiors);
+    }
+
+    public Set<Transfer> getGains() {
+        return Collections.unmodifiableSet(this.gains);
+    }
+
+    public Set<Transfer> getLosses() {
+        return Collections.unmodifiableSet(this.losses);
+    }
 
     @Override
     public String toString() {

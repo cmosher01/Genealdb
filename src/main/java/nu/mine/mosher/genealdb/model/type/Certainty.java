@@ -43,7 +43,7 @@ public class Certainty implements Comparable<Certainty> {
 
     @Override
     public String toString() {
-        return ""+this.certainty+"*";
+        return ""+this.certainty+"!";
     }
 
 

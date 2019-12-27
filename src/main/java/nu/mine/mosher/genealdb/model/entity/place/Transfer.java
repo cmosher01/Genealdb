@@ -4,16 +4,15 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.*;
 
-public class Transfer implements Comparable<Transfer> {
+public class Transfer {
+    private PlaceChange during;
+
     @Relationship(type = "OF")
     private Set<Place> ofInferior = new HashSet<>();
     @Relationship(type = "FROM")
     private Set<Place> fromSuperior = new HashSet<>();
     @Relationship(type = "TO")
     private Set<Place> toSuperior = new HashSet<>();
-
-    private int year;
-    private String notes;
 
     @SuppressWarnings("unused")
     private Long id;
@@ -22,15 +21,6 @@ public class Transfer implements Comparable<Transfer> {
 
     @SuppressWarnings("unused")
     public Transfer() {
-    }
-
-    public Transfer(final int year) {
-        this(year, "");
-    }
-
-    public Transfer(final int year, final String notes) {
-        this.year = year;
-        this.notes = notes;
     }
 
     public Transfer of(final Place place) {
@@ -51,8 +41,21 @@ public class Transfer implements Comparable<Transfer> {
         return this;
     }
 
-    @Override
-    public int compareTo(final Transfer that) {
-        return Integer.compare(this.year, that.year);
+    public Transfer during(final PlaceChange change) {
+        this.during = change;
+        change.addTransfer(this);
+        return this;
+    }
+
+    public Set<Place> getOfInferior() {
+        return Collections.unmodifiableSet(this.ofInferior);
+    }
+
+    public Set<Place> getFromSuperior() {
+        return Collections.unmodifiableSet(this.fromSuperior);
+    }
+
+    public Set<Place> getToSuperior() {
+        return Collections.unmodifiableSet(this.toSuperior);
     }
 }

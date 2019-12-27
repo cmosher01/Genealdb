@@ -4,31 +4,19 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.*;
 
-public class Transform implements Comparable<Transform> {
+public class Transform {
+    private PlaceChange during;
+
     @Relationship(type = "FROM")
     private Set<Place> from = new HashSet<>();
     @Relationship(type = "TO")
     private Set<Place> to = new HashSet<>();
 
-    private int year;
-    private String notes;
-
     @SuppressWarnings("unused")
     private Long id;
 
-
-
     @SuppressWarnings("unused")
     public Transform() {
-    }
-
-    public Transform(final int year) {
-        this(year, "");
-    }
-
-    public Transform(final int year, final String notes) {
-        this.year = year;
-        this.notes = notes;
     }
 
     public Transform from(final Place from) {
@@ -43,8 +31,17 @@ public class Transform implements Comparable<Transform> {
         return this;
     }
 
-    @Override
-    public int compareTo(final Transform that) {
-        return Integer.compare(this.year, that.year);
+    public Transform during(final PlaceChange change) {
+        this.during = change;
+        change.addTransform(this);
+        return this;
+    }
+
+    public Set<Place> getFrom() {
+        return Collections.unmodifiableSet(this.from);
+    }
+
+    public Set<Place> getTo() {
+        return Collections.unmodifiableSet(this.to);
     }
 }

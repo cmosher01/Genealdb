@@ -7,6 +7,7 @@ import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.Place;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
+import nu.mine.mosher.genealdb.model.type.ObjectRef;
 import nu.mine.mosher.genealdb.view.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.ogm.driver.Driver;
@@ -60,8 +61,8 @@ public class Genealdb {
     private static void serve(final SessionFactory factoryNeo) throws IOException {
         final Session neo = factoryNeo.openSession();
 
-        final Long idDefault = getArbitraryCitationId(neo);
-        if (Objects.isNull(idDefault)) {
+        final ObjectRef init = getArbitraryCitation(neo);
+        if (Objects.isNull(init)) {
             factoryNeo.close();
             return;
         }
@@ -72,20 +73,22 @@ public class Genealdb {
             @Override
             @SuppressWarnings({"rawtypes", "unchecked"})
             public Response serve(final IHTTPSession http) {
-                final Class cls = getClassParam(http, Citation.class);
-                final Long id = getIdParam(http, idDefault);
+                final ObjectRef objRef = getObjectRef(http, init);
 
-                final Object object = neo.load(cls, id, 2);
+                final Object object = neo.load(objRef.cls(), objRef.id(), 3);
+                if (Objects.isNull(object)) {
+                    return newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "page not found");
+                }
                 final Expandable view;
-                if (cls.equals(Citation.class)) {
+                if (objRef.cls().equals(Citation.class)) {
                     final Citation entity = (Citation)object;
                     view = buildView(entity);
-                } else if (cls.equals(Persona.class)) {
+                } else if (objRef.cls().equals(Persona.class)) {
                     final Persona entity = (Persona)object;
                     view = buildView(entity);
-//                } else if (cls.equals(Place.class)) {
-//                    final Place entity = (Place)object;
-//                    view = buildView(entity);
+                } else if (objRef.cls().equals(Place.class)) {
+                    final Place entity = (Place)object;
+                    view = buildView(entity);
                 } else {
                     view = Expandable.expd(blank());
                 }
@@ -102,36 +105,36 @@ public class Genealdb {
         }));
 }
 
-    private static Long getArbitraryCitationId(Session neo) {
+    private static ObjectRef getArbitraryCitation(final Session neo) {
         try {
             final Collection<Citation> citations = neo.loadAll(Citation.class, 1);
             final Citation citDefault = citations.iterator().next();
-            return citDefault.getId();
+            return new ObjectRef(Citation.class, citDefault.getId());
         } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static Long getIdParam(final IHTTPSession http, final Long idDefault) {
-        final List<String> id = http.getParameters().get("id");
-        if (id == null || id.isEmpty()) {
-            return idDefault;
-        }
-        return Long.valueOf(id.get(0));
-    }
-
     @SuppressWarnings("rawtypes")
-    private static Class getClassParam(final IHTTPSession http, final Class classDefault) {
-        final List<String> entity = http.getParameters().get("entity");
-        if (entity == null || entity.isEmpty()) {
-            return classDefault;
-        }
+    private static ObjectRef getObjectRef(final IHTTPSession http, final ObjectRef def) {
+        final Class cls;
         try {
-            return Class.forName(entity.get(0));
-        } catch (final ClassNotFoundException ignore) {
-            return classDefault;
+            final List<String> arg = http.getParameters().get("entity");
+            cls = Class.forName(arg.get(0));
+        } catch (final Throwable ignore) {
+            return def;
         }
+
+        final Long i;
+        try {
+            final List<String> arg = http.getParameters().get("id");
+            i = Long.valueOf(arg.get(0));
+        } catch (final Throwable ignore) {
+            return def;
+        }
+
+        return new ObjectRef(cls,i);
     }
 
     private static Expandable buildView(final Persona persona) {
@@ -177,32 +180,18 @@ public class Genealdb {
                 expd(blank().withLabel("conclusions"), rx));
     }
 
-    // TODO implement Place handling (use persona impl as a starting point)
-//    private static Expandable buildView(final Place place) {
-//        final List<Expandable> re = persona.getRoles().stream()
-//            .map(Role::getEvent)
-//            .distinct()
-//            .sorted()
-//            .map(Genealdb::getEventDisplay)
-//            .collect(Collectors.toList());
-//
-//        final List<Expandable> rx = persona.getXrefs().stream()
-//            .map(is ->
-//                expd(line(is.getSameness().getRationale()).withLabel(is.getSameness().getCites()),
-//                    getXrefDisplay(is.getSameness())))
-//            .collect(toList());
-//
-//        return expd(Line.blank(),
-//            expd(line(persona.getName())),
-//            expd(line(persona.getCites()).withLabel("source")),
-//            expd(blank().withLabel("extracted events"), re),
-//            expd(blank().withLabel("cross references"), rx));
-//    }
+    private static Expandable buildView(final Place place) {
+        final List<Expandable> rt = new ArrayList<>();
+
+        return expd(Line.blank(),
+            expd(line(place.getName())),
+            expd(blank().withLabel("transitions"), rt));
+    }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
         return sameness.getAre().stream()
             .map(is -> expd(line(
-                is.getCertainty(),
+                "("+is.getCertainty()+")",
                 is.getPersona(),
                 is.getPersona().getCites(),
                 is.getNotes())))
@@ -210,7 +199,7 @@ public class Genealdb {
     }
 
     private static Expandable getEventDisplay(final Event event) {
-        return expd(line(event.getDisplay()),
+        return expd(line(event.getDay().getDisplay(), event.getPlace(), event.getType(), event.getDescription()),
             event.getPlayers().stream()
                 .map(role -> expd(line(role.getPersona()).withLabel(role.getDisplay())))
                 .collect(toList()));

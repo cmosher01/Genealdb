@@ -1,4 +1,4 @@
-node {
+﻿﻿node {
   diameter: 80px;
   color: #FFD86E;
   border-color: #EDBA39;
@@ -7,6 +7,7 @@ node {
   font-size: 8pt;
   caption: "<id>";
 }
+
 relationship {
   color: #A5ABB6;
   shaft-width: 1px;
@@ -16,32 +17,26 @@ relationship {
   text-color-internal: #000000;
   caption: "<type>";
 }
+
 node.* {
   defaultCaption: "<id>";
 }
-node.Event {
-  caption: "{type}: {description} ({year}/{place})";
-  color: #6DCE9E;
-  border-color: #60B58B;
-  diameter: 65px;
-}
+
+
+
 node.Citation {
   caption: "{brief}";
   color: #68BDF6;
   border-color: #5CA8DB;
 }
+
 node.Persona {
   caption: "{name}";
   color: #FFD86E;
   border-color: #EDBA39;
   diameter: 80px;
 }
-node.Place {
-  caption: "{name}";
-  color: #FFD86E;
-  border-color: #A5ABB6;
-  diameter: 65px;
-}
+
 node.Sameness {
   caption: "identical ({rationale})";
   color: #FB95AF;
@@ -49,60 +44,96 @@ node.Sameness {
   text-color-internal: #FFFFFF;
   diameter: 80px;
 }
-relationship.HAD_ROLE_IN {
-  caption: "{role} ({certainty}*) in";
+
+node.Event {
+  caption: "{type} {description}";
   color: #6DCE9E;
   border-color: #60B58B;
-  shaft-width: 3px;
+  diameter: 65px;
 }
+
+node.Place {
+  caption: "{name}";
+  color: #569480;
+  border-color: #447666;
+  diameter: 65px;
+  text-color-internal: #FFFFFF;
+}
+
+node.PlaceChange {
+  caption: "{year} {notes}";
+  color: #FFC454;
+  border-color: #d7a013;
+  text-color-internal: #604A0E;
+}
+
+node.Transfer {
+  color: #4C8EDA;
+  border-color: #2870c2;
+  text-color-internal: #FFFFFF;
+  caption: "xfer";
+  diameter: 50px;
+}
+
+node.Transform {
+  caption: "xfrm";
+  color: #D9C8AE;
+  border-color: #c0a378;
+  text-color-internal: #604A0E;
+  diameter: 50px;
+}
+
+
+
 relationship.CITES {
   caption: "cites";
   color: #68BDF6;
   border-color: #5CA8DB;
   shaft-width: 1px;
 }
+
+relationship.HAD_ROLE_IN {
+  caption: "{role} ({certainty}!) in";
+  color: #6DCE9E;
+  border-color: #60B58B;
+  shaft-width: 3px;
+}
+
 relationship.IS {
-  caption: "is ({certainty}*)";
+  caption: "is ({certainty}!)";
   color: #FFD86E;
   border-color: #EDBA39;
   text-color-internal: #604A0E;
   shaft-width: 25px;
 }
-relationship.BECAME {
-  caption: "{date}";
-  shaft-width: 2px;
-  color: #A5ABB6;
-  border-color: #A5ABB6;
-  text-color-internal: #FFFFFF;
-}
+
 relationship.IN {
   color: #FFD86E;
   border-color: #EDBA39;
   text-color-internal: #999900;
   text-color-external: #999900;
 }
-node.Transfer {
-  color: #4C8EDA;
-  border-color: #2870c2;
+
+relationship.OF {
+  color: #569480;
+  border-color: #447666;
   text-color-internal: #FFFFFF;
-  defaultCaption: "<id>";
-  caption: "{year}";
-  diameter: 50px;
 }
-node.Transform {
-  defaultCaption: "<id>";
-  color: #D9C8AE;
-  border-color: #c0a378;
-  text-color-internal: #604A0E;
-  caption: "{year}";
-}
+
 relationship.FROM {
   color: #569480;
   border-color: #447666;
   text-color-internal: #FFFFFF;
 }
+
 relationship.TO {
   color: #57C7E3;
   border-color: #23b3d7;
+  text-color-internal: #FFFFFF;
+}
+
+relationship.DURING {
+  color: #569480;
+  border-color: #447666;
   text-color-internal: #FFFFFF;
 }
