@@ -29,7 +29,7 @@ import static nu.mine.mosher.genealdb.view.Line.*;
 public class Genealdb {
     private static Logger LOG = LoggerFactory.getLogger(Genealdb.class);
 
-    private static final URI URI_NEO4J = URI.create("bolt://localhost");
+    private static final URI URI_NEO4J = URI.create("bolt://neo4j");
 
     private static final String[] packagesEntity = new String[] {
         Citation.class.getPackage().getName(),
