@@ -47,7 +47,7 @@ public class Sample {
         final Place vilEarlville = new Place("Village of Earlville", null);
         new Transform().from(pEarlville).to(vilEarlville).during(incEarlville);
 
-        final PlaceChange indepenentCitiesVirginia = new PlaceChange(1871, "1871 Virginia Constitution");
+        final PlaceChange indepenentCitiesVirginia = new PlaceChange(1871, "Virginia Constitution");
         final Place radford = new Place("Radford, VA", buildLatLong(37.1275, -80.569444));
         new Transform().to(radford).during(indepenentCitiesVirginia);
         new Transfer().of(radford).to(stVa).during(indepenentCitiesVirginia);

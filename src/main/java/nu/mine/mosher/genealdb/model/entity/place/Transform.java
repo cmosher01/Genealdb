@@ -44,4 +44,8 @@ public class Transform {
     public Set<Place> getTo() {
         return Collections.unmodifiableSet(this.to);
     }
+
+    public PlaceChange getDuring() {
+        return this.during;
+    }
 }

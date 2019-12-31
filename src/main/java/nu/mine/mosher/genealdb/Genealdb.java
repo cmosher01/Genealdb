@@ -6,6 +6,8 @@ import nu.mine.mosher.genealdb.model.Sample;
 import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.Place;
+import nu.mine.mosher.genealdb.model.entity.place.PlaceChange;
+import nu.mine.mosher.genealdb.model.entity.place.Transform;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import nu.mine.mosher.genealdb.model.type.ObjectRef;
 import nu.mine.mosher.genealdb.view.*;
@@ -16,6 +18,9 @@ import org.neo4j.ogm.session.*;
 import org.stringtemplate.v4.STGroupFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,8 @@ import static nu.mine.mosher.genealdb.view.Expandable.expd;
 import static nu.mine.mosher.genealdb.view.Line.*;
 
 public class Genealdb {
+    private static final URI URI_NEO4J = URI.create("bolt://localhost");
+
     private static final String[] packagesEntity = new String[] {
         Citation.class.getPackage().getName(),
         Place.class.getPackage().getName(),
@@ -39,7 +46,7 @@ public class Genealdb {
 
 
 
-        final Driver driverNeo = new BoltDriver(GraphDatabase.driver("bolt://localhost"));
+        final Driver driverNeo = new BoltDriver(GraphDatabase.driver(URI_NEO4J));
         final SessionFactory factoryNeo = new SessionFactory(driverNeo, packagesEntity);
 
 
@@ -180,13 +187,52 @@ public class Genealdb {
                 expd(blank().withLabel("conclusions"), rx));
     }
 
+//    private static class ViewPlaceTransform
+//
     private static Expandable buildView(final Place place) {
         final List<Expandable> rt = new ArrayList<>();
 
-        return expd(Line.blank(),
+//        final SortedSet<PlaceChange> rch = new TreeSet<>();
+//        rch.addAll(place.getConstruction().stream().map(Transform::getDuring).collect(Collectors.toSet()));
+//        rch.addAll(place.getDestruction().stream().map(Transform::getDuring).collect(Collectors.toSet()));
+
+//        rch.stream().map(pc -> pcTransform(pc));
+
+        final List<Expandable> cons = place.getConstruction().stream().map(Genealdb::cons).collect(Collectors.toList());
+        final List<Expandable> destr = place.getDestruction().stream().map(Genealdb::destr).collect(Collectors.toList());
+
+        return expd(blank(),
             expd(line(place.getName())),
-            expd(blank().withLabel("transitions"), rt));
+            expd(blank().withLabel("construction"), cons),
+            expd(blank().withLabel("destruction"), destr),
+            expd(blank(), rt));
     }
+
+    private static Expandable cons(Transform c) {
+        List<Expandable> froms = c.getFrom().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
+        if (froms.isEmpty()) {
+            froms = new ArrayList<>();
+            froms.add(expd(line("[created]")));
+        }
+        return expd(view(c.getDuring()).withLabel("during"), froms);
+    }
+
+    private static Expandable destr(Transform c) {
+        List<Expandable> tos = c.getTo().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
+        if (tos.isEmpty()) {
+            tos = new ArrayList<>();
+            tos.add(expd(line("[destroyed]")));
+        }
+        return expd(view(c.getDuring()).withLabel("during"), tos);
+    }
+
+    private static Line view(final PlaceChange pc) {
+        return line(pc.getDay().getDisplay(), pc.getNotes());
+    }
+
+    //    private static Line pcTransform(final PlaceChange pc) {
+//        return line(pc.ha)
+//    }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
         return sameness.getAre().stream()
