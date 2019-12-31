@@ -5,9 +5,7 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import nu.mine.mosher.genealdb.model.Sample;
 import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
-import nu.mine.mosher.genealdb.model.entity.place.Place;
-import nu.mine.mosher.genealdb.model.entity.place.PlaceChange;
-import nu.mine.mosher.genealdb.model.entity.place.Transform;
+import nu.mine.mosher.genealdb.model.entity.place.*;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import nu.mine.mosher.genealdb.model.type.ObjectRef;
 import nu.mine.mosher.genealdb.view.*;
@@ -15,12 +13,11 @@ import org.neo4j.driver.GraphDatabase;
 import org.neo4j.ogm.driver.Driver;
 import org.neo4j.ogm.drivers.bolt.driver.BoltDriver;
 import org.neo4j.ogm.session.*;
+import org.slf4j.*;
 import org.stringtemplate.v4.STGroupFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +27,8 @@ import static nu.mine.mosher.genealdb.view.Expandable.expd;
 import static nu.mine.mosher.genealdb.view.Line.*;
 
 public class Genealdb {
+    private static Logger LOG = LoggerFactory.getLogger(Genealdb.class);
+
     private static final URI URI_NEO4J = URI.create("bolt://localhost");
 
     private static final String[] packagesEntity = new String[] {
@@ -46,11 +45,14 @@ public class Genealdb {
 
 
 
+        LOG.trace("will open connection to Neo4j using Bolt driver...");
         final Driver driverNeo = new BoltDriver(GraphDatabase.driver(URI_NEO4J));
+        LOG.trace("will create new session...");
         final SessionFactory factoryNeo = new SessionFactory(driverNeo, packagesEntity);
 
 
         if (args[0].equalsIgnoreCase("c")) {
+            LOG.trace("received command 'C', will create sample objects in database...");
             try {
                 factoryNeo.openSession().save(Sample.buildEntities());
             } finally {
@@ -58,6 +60,7 @@ public class Genealdb {
                 driverNeo.close();
             }
         } else if (args[0].equalsIgnoreCase("s")) {
+            LOG.trace("received command 'S', will begin serving objects from database...");
             serve(factoryNeo);
         }
 
@@ -104,6 +107,7 @@ public class Genealdb {
             }
         };
 
+        LOG.trace("received command 'C', will create sample objects in database...");
         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 
         getRuntime().addShutdownHook(new Thread(() -> {
@@ -187,52 +191,67 @@ public class Genealdb {
                 expd(blank().withLabel("conclusions"), rx));
     }
 
-//    private static class ViewPlaceTransform
-//
     private static Expandable buildView(final Place place) {
-        final List<Expandable> rt = new ArrayList<>();
+        final SortedMap<PlaceChange, List<Expandable>> pc = new TreeMap<>();
+        place.getConstruction().forEach(c -> cons(c, pc));
+        place.getDestruction().forEach(c -> destr(c, pc));
+        place.getSuperiors().forEach(s -> supers(s, pc));
+        place.getGains().forEach(s -> gains(s, pc));
+        place.getLosses().forEach(s -> losses(s, pc));
 
-//        final SortedSet<PlaceChange> rch = new TreeSet<>();
-//        rch.addAll(place.getConstruction().stream().map(Transform::getDuring).collect(Collectors.toSet()));
-//        rch.addAll(place.getDestruction().stream().map(Transform::getDuring).collect(Collectors.toSet()));
-
-//        rch.stream().map(pc -> pcTransform(pc));
-
-        final List<Expandable> cons = place.getConstruction().stream().map(Genealdb::cons).collect(Collectors.toList());
-        final List<Expandable> destr = place.getDestruction().stream().map(Genealdb::destr).collect(Collectors.toList());
+        final List<Expandable> pcs = new ArrayList<>();
+        pc.forEach((key, value) -> pcs.add(expd(getPlaceChangeDisplay(key).withLabel("during"), value)));
 
         return expd(blank(),
             expd(line(place.getName())),
-            expd(blank().withLabel("construction"), cons),
-            expd(blank().withLabel("destruction"), destr),
-            expd(blank(), rt));
+            expd(blank().withLabel("transfers and transforms"), pcs));
     }
 
-    private static Expandable cons(Transform c) {
-        List<Expandable> froms = c.getFrom().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
-        if (froms.isEmpty()) {
-            froms = new ArrayList<>();
-            froms.add(expd(line("[created]")));
+    private static void cons(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
+        List<Expandable> others = c.getFrom().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
+        if (others.isEmpty()) {
+            others = new ArrayList<>();
+            others.add(expd(line("[created]")));
         }
-        return expd(view(c.getDuring()).withLabel("during"), froms);
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
     }
 
-    private static Expandable destr(Transform c) {
-        List<Expandable> tos = c.getTo().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
-        if (tos.isEmpty()) {
-            tos = new ArrayList<>();
-            tos.add(expd(line("[destroyed]")));
+    private static void destr(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
+        List<Expandable> others = c.getTo().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
+        if (others.isEmpty()) {
+            others = new ArrayList<>();
+            others.add(expd(line("[destroyed]")));
         }
-        return expd(view(c.getDuring()).withLabel("during"), tos);
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
     }
 
-    private static Line view(final PlaceChange pc) {
+    private static void supers(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
+        List<Expandable> others = c.getFromSuperior().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
+
+        others = c.getToSuperior().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
+    }
+
+    private static void gains(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
+        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("gained "))).collect(toList());
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
+    }
+
+    private static void losses(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
+        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("lost "))).collect(toList());
+        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
+        pc.get(c.getDuring()).addAll(others);
+    }
+
+    private static Line getPlaceChangeDisplay(final PlaceChange pc) {
         return line(pc.getDay().getDisplay(), pc.getNotes());
     }
-
-    //    private static Line pcTransform(final PlaceChange pc) {
-//        return line(pc.ha)
-//    }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
         return sameness.getAre().stream()

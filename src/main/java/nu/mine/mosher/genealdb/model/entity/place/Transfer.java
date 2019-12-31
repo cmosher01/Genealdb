@@ -58,4 +58,8 @@ public class Transfer {
     public Set<Place> getToSuperior() {
         return Collections.unmodifiableSet(this.toSuperior);
     }
+
+    public PlaceChange getDuring() {
+        return this.during;
+    }
 }
