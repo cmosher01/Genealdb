@@ -8,6 +8,6 @@ Copyright © 2018–2019, by Christopher Alan Mosher, Shelton, Connecticut, USA,
 [![Build status](https://ci.appveyor.com/api/projects/status/TODO?svg=true)](https://ci.appveyor.com/project/cmosher01/Genealdb)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 
-![image](./graph_classes.svg)
+![image](./model.svg)
 
 This is designed to be a replacement for [GEDCOM](https://www.familysearch.org/wiki/en/GEDCOM).
