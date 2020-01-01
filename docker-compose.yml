@@ -20,4 +20,3 @@ services:
       - neo4j
     ports:
       - "8080:8080"
-    command: $GENEALDB_CMD

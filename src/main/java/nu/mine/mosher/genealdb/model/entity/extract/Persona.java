@@ -57,6 +57,11 @@ public class Persona {
             .toString();
     }
 
+    public String getDisplay() {
+        return this.description;
+    }
+
+
 
     public Long getId() {
         return this.id;

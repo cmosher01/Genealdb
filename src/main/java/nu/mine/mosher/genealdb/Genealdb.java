@@ -1,5 +1,6 @@
 package nu.mine.mosher.genealdb;
 
+import com.google.openlocationcode.OpenLocationCode;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import nu.mine.mosher.genealdb.model.Sample;
@@ -14,10 +15,11 @@ import org.neo4j.ogm.driver.Driver;
 import org.neo4j.ogm.drivers.bolt.driver.BoltDriver;
 import org.neo4j.ogm.session.*;
 import org.slf4j.*;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.stringtemplate.v4.STGroupFile;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,9 +29,13 @@ import static nu.mine.mosher.genealdb.view.Expandable.expd;
 import static nu.mine.mosher.genealdb.view.Line.*;
 
 public class Genealdb {
-    private static Logger LOG = LoggerFactory.getLogger(Genealdb.class);
-
-    private static final URI URI_NEO4J = URI.create("bolt://neo4j");
+    private static final Logger LOG;
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINEST);
+        LOG = LoggerFactory.getLogger(Genealdb.class);
+    }
 
     private static final String[] packagesEntity = new String[] {
         Citation.class.getPackage().getName(),
@@ -40,44 +46,32 @@ public class Genealdb {
 
     public static void main(final String... args) throws IOException {
         if (args.length != 1) {
-            throw new IllegalArgumentException("usage: genealdb c|s");
+            throw new IllegalArgumentException("usage: genealdb neo4j-host");
         }
+        final URI uriNeo4j = URI.create("bolt://"+args[0]);
 
+        LOG.trace("opening connection to Neo4j at {} using Bolt driver...", args[0]);
+        final Driver driverNeo = new BoltDriver(GraphDatabase.driver(uriNeo4j));
 
-
-        LOG.trace("will open connection to Neo4j using Bolt driver...");
-        final Driver driverNeo = new BoltDriver(GraphDatabase.driver(URI_NEO4J));
-        LOG.trace("will create new session...");
+        LOG.trace("creating Neo4j session factory...");
         final SessionFactory factoryNeo = new SessionFactory(driverNeo, packagesEntity);
 
-
-        if (args[0].equalsIgnoreCase("c")) {
-            LOG.trace("received command 'C', will create sample objects in database...");
-            try {
-                factoryNeo.openSession().save(Sample.buildEntities());
-            } finally {
-                factoryNeo.close();
-                driverNeo.close();
-            }
-        } else if (args[0].equalsIgnoreCase("s")) {
-            LOG.trace("received command 'S', will begin serving objects from database...");
+        try {
             serve(factoryNeo);
+        } catch (final Exception e) {
+            factoryNeo.close();
+            throw e;
         }
-
-        System.out.flush();
-        System.err.flush();
     }
 
     private static void serve(final SessionFactory factoryNeo) throws IOException {
+        LOG.trace("loading web page template...");
+        final STGroupFile stg = new STGroupFile("page.stg");
+
+        LOG.trace("creating Neo4j session...");
         final Session neo = factoryNeo.openSession();
 
-        final ObjectRef init = getArbitraryCitation(neo);
-        if (Objects.isNull(init)) {
-            factoryNeo.close();
-            return;
-        }
-
-        final STGroupFile stg = new STGroupFile("page.stg");
+        final ObjectRef init = initDataset(neo);
 
         final NanoHTTPD server = new NanoHTTPD(8080) {
             @Override
@@ -111,10 +105,27 @@ public class Genealdb {
         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 
         getRuntime().addShutdownHook(new Thread(() -> {
+            LOG.trace("stopping ...");
+            System.out.flush();
+            System.err.flush();
             factoryNeo.close();
+            LOG.trace("stopping HTTP server...");
+            System.out.flush();
+            System.err.flush();
             server.stop();
         }));
-}
+    }
+
+    private static ObjectRef initDataset(final Session neo) {
+        LOG.trace("Searching for an arbitrary citation entity...");
+        ObjectRef init = getArbitraryCitation(neo);
+        if (Objects.isNull(init)) {
+            LOG.warn("No citation entity found; will create a sample dataset...");
+            neo.save(Sample.buildEntities());
+            init = getArbitraryCitation(neo);
+        }
+        return init;
+    }
 
     private static ObjectRef getArbitraryCitation(final Session neo) {
         try {
@@ -205,8 +216,36 @@ public class Genealdb {
         pc.forEach((key, value) -> pcs.add(expd(getPlaceChangeDisplay(key).withLabel("during"), value)));
 
         return expd(blank().withLabel("place"),
-            expd(line(place.getName())),
+            expd(line(place.getName()).withLabel("name")),
+            expd(line(place.getNotes()).withLabel("notes")),
+            expd(line(getPluscodeDisplay(place.getPluscodeVicinity())).withLabel("approximate vicinity")),
+            expd(line(place.getUriRegion()).withLabel("region")),
             expd(blank().withLabel("transfers and transforms"), pcs));
+    }
+
+    private static class PlusLink {
+        private final URI uri;
+
+        public PlusLink(final String pluscode) {
+            this.uri = URI.create("https://plus.codes/"+pluscode);
+        }
+
+        public String getHost() {
+            return "";
+        }
+
+        public String getDisplay() {
+            return uri.toString();
+        }
+
+        @Override
+        public String toString() {
+            return this.uri.toString();
+        }
+    }
+
+    private static PlusLink getPluscodeDisplay(final OpenLocationCode pluscodeVicinity) {
+        return new PlusLink(pluscodeVicinity.getCode());
     }
 
     private static void cons(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
@@ -260,20 +299,16 @@ public class Genealdb {
             .map(is -> expd(line(
                 "("+is.getCertainty()+")",
                 is.getPersona(),
-                is.getPersona().getCites(),
+                "in", is.getPersona().getCites(),
                 is.getNotes())))
             .collect(toList());
     }
 
     private static Expandable getEventDisplay(final Event event) {
-        return expd(line(event.getDateHappened().getDisplay(), getPlaceName(event), event.getType(), event.getDescription()),
+        return expd(line(event.getDateHappened().getDisplay(), event.getPlace(), event.getType(), event.getDescription()),
             event.getPlayers().stream()
                 .map(role -> expd(line(role.getPersona()).withLabel(role.getDescription())))
                 .collect(toList()));
-    }
-
-    private static String getPlaceName(Event event) {
-        return Objects.isNull(event.getPlace()) ? "" : event.getPlace().getName();
     }
 
     private static String prePage(final STGroupFile stg, final Expandable x) {

@@ -61,17 +61,26 @@ $x.values:val(); separator=" "$
 val(x) ::= <%
 $if (x.id)$
     <a href="?entity=$x.class.name$&id=$x.id$">
-        $x$
+        $view(x)$
     </a>
 $elseif (x.host || x.path || x.query)$
     <a href="$x$">
-        $x$
+        $view(x)$
     </a>
+$else$
+    $view(x)$
+$endif$
+%>
+
+
+
+view(x) ::= <%
+$if (x.display)$
+    $x.display$
 $else$
     $x$
 $endif$
 %>
-
 
 
 pre(x) ::= "<pre>$\n$$x$</pre>"

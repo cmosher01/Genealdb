@@ -89,6 +89,10 @@ public class Citation implements Comparable<Citation> {
             .toString();
     }
 
+    public String getDisplay() {
+        return this.description;
+    }
+
 
 
     public Long getId() {

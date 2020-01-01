@@ -82,6 +82,10 @@ public class Place {
             .toString();
     }
 
+    public String getDisplay() {
+        return this.name;
+    }
+
     public Long getId() {
         return this.id;
     }

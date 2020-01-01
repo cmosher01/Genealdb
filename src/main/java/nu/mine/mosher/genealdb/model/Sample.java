@@ -14,7 +14,7 @@ import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
 public class Sample {
     public static Set buildEntities() {
-        final Place svUsa = new Place("United States of America", plus("86000000+"), null, "country US (1776-))");
+        final Place svUsa = new Place("United States of America", plus("86000000+"), null, "country US (1776-)");
 
         final PlaceChange constitutionUsa = new PlaceChange(1788, "Constitution of USA");
 
