@@ -19,7 +19,7 @@ public class Role {
     @EndNode
     private Event event;
 
-    private String role = "";
+    private String description;
     @Convert(CertaintyConverter.class)
     private Certainty certainty;
     private String notes;
@@ -33,12 +33,12 @@ public class Role {
     public Role() {
     }
 
-    public Role(final Persona persona, final Event event, final String role, final Certainty certainty, final String notes) {
+    public Role(final Persona persona, final Event event, final String description, final Certainty certainty, final String notes) {
         this.persona = Objects.requireNonNull(persona);
         this.persona.addLink(this);
         this.event = Objects.requireNonNull(event);
         this.event.addLink(this);
-        this.role = Objects.requireNonNull(role);
+        this.description = Objects.requireNonNull(description);
         this.certainty = Objects.requireNonNull(certainty);
         this.notes = Objects.requireNonNull(notes);
     }
@@ -48,8 +48,10 @@ public class Role {
     @Override
     public String toString() {
         return toStringHelper(this)
-            .add("role", this.role)
-            .add("cert", this.certainty)
+            .omitNullValues()
+            .add("description", this.description)
+            .add("certainty", this.certainty)
+            .add("notes", this.notes)
             .toString();
     }
 
@@ -57,10 +59,6 @@ public class Role {
 
     public Long getId() {
         return this.id;
-    }
-
-    public String getDisplay() {
-        return this.role + " (" + this.certainty + ")";
     }
 
     public Persona getPersona() {
@@ -71,8 +69,8 @@ public class Role {
         return this.event;
     }
 
-    public String getRole() {
-        return this.role;
+    public String getDescription() {
+        return this.description;
     }
 
     public Certainty getCertainty() {

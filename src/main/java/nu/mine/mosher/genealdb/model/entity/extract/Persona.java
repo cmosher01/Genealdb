@@ -16,12 +16,11 @@ public class Persona {
     @Relationship(type = "IS", direction = Relationship.INCOMING)
     private Set<Is> xrefs = new HashSet<>();
     @Relationship(type = "HAD_ROLE_IN")
-    private Set<Role> hadRoleIn = new HashSet<>();
+    private Set<Role> hadRolesIn = new HashSet<>();
     private Citation cites;
 
-    // With slashes around surname, GEDCOM style.
-    // For identification purposes only, not for assertion of correctness.
-    private String name;
+    private String description;
+    private String notes;
 
     @SuppressWarnings("unused")
     private Long id;
@@ -32,10 +31,11 @@ public class Persona {
     public Persona() {
     }
 
-    public Persona(final Citation cites, final String name) {
+    public Persona(final Citation cites, final String description, final String notes) {
         this.cites = Objects.requireNonNull(cites);
         this.cites.addLink(this);
-        this.name = Objects.requireNonNull(name);
+        this.description = Objects.requireNonNull(description);
+        this.notes = Objects.requireNonNull(notes);
     }
 
     public void addLink(final Is is) {
@@ -43,7 +43,7 @@ public class Persona {
     }
 
     void addLink(final Role role) {
-        this.hadRoleIn.add(Objects.requireNonNull(role));
+        this.hadRolesIn.add(Objects.requireNonNull(role));
     }
 
 
@@ -51,7 +51,9 @@ public class Persona {
     @Override
     public String toString() {
         return toStringHelper(this)
-            .add("name", this.name)
+            .omitNullValues()
+            .add("description", this.description)
+            .add("notes", this.notes)
             .toString();
     }
 
@@ -64,15 +66,19 @@ public class Persona {
         return unmodifiableSet(this.xrefs);
     }
 
-    public Set<Role> getRoles() {
-        return unmodifiableSet(this.hadRoleIn);
+    public Set<Role> getHadRolesIn() {
+        return unmodifiableSet(this.hadRolesIn);
     }
 
     public Citation getCites() {
         return this.cites;
     }
 
-    public String getName() {
-        return this.name;
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getNotes() {
+        return this.notes;
     }
 }

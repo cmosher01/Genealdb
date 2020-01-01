@@ -7,6 +7,7 @@ import org.neo4j.ogm.annotation.typeconversion.Convert;
 
 import java.util.*;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
 public class PlaceChange implements Comparable<PlaceChange> {
@@ -16,7 +17,7 @@ public class PlaceChange implements Comparable<PlaceChange> {
     private Set<Transfer> transfers = new HashSet<>();
 
     @Convert(DayConverter.class)
-    private Day happenedOn;
+    private Day dateHappened;
     private String notes;
 
     @SuppressWarnings("unused")
@@ -27,13 +28,30 @@ public class PlaceChange implements Comparable<PlaceChange> {
     }
 
     public PlaceChange(final int year, final String notes) {
-        this.happenedOn = Day.ofYearIso(year);
+        this.dateHappened = Day.ofYearIso(year);
         this.notes = Objects.requireNonNull(notes);
+    }
+
+    public void addTransfer(Transfer transfer) {
+        this.transfers.add(transfer);
+    }
+
+    public void addTransform(Transform transform) {
+        this.transforms.add(transform);
+    }
+
+    @Override
+    public String toString() {
+        return toStringHelper(this)
+            .omitNullValues()
+            .add("dateHappened", this.dateHappened)
+            .add("notes", this.notes)
+            .toString();
     }
 
     @Override
     public int compareTo(final PlaceChange that) {
-        return this.happenedOn.compareTo(that.happenedOn);
+        return this.dateHappened.compareTo(that.dateHappened);
     }
 
     public Long getId() {
@@ -44,8 +62,8 @@ public class PlaceChange implements Comparable<PlaceChange> {
         return this.notes;
     }
 
-    public Day getDay() {
-        return this.happenedOn;
+    public Day getDateHappened() {
+        return this.dateHappened;
     }
 
     public Set<Transfer> getTransfers() {
@@ -54,13 +72,5 @@ public class PlaceChange implements Comparable<PlaceChange> {
 
     public Set<Transform> getTransforms() {
         return Collections.unmodifiableSet(this.transforms);
-    }
-
-    public void addTransfer(Transfer transfer) {
-        this.transfers.add(transfer);
-    }
-
-    public void addTransform(Transform transform) {
-        this.transforms.add(transform);
     }
 }

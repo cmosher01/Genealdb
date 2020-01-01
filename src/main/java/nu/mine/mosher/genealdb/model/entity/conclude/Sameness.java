@@ -14,6 +14,7 @@ public class Sameness {
     private Citation cites;
 
     private String rationale;
+    private String notes;
 
     @SuppressWarnings("unused")
     private Long id;
@@ -24,10 +25,11 @@ public class Sameness {
     public Sameness() {
     }
 
-    public Sameness(final Citation cites, final String rationale) {
+    public Sameness(final Citation cites, final String rationale, final String notes) {
         this.cites = Objects.requireNonNull(cites);
         this.cites.addLink(this);
         this.rationale = Objects.requireNonNull(rationale);
+        this.notes = Objects.requireNonNull(notes);
     }
 
     void addLink(final Is is) {
@@ -39,7 +41,9 @@ public class Sameness {
     @Override
     public String toString() {
         return toStringHelper(this)
+            .omitNullValues()
             .add("rationale", this.rationale)
+            .add("notes", this.notes)
             .toString();
     }
 
@@ -59,5 +63,9 @@ public class Sameness {
 
     public String getRationale() {
         return this.rationale;
+    }
+
+    public String getNotes() {
+        return this.notes;
     }
 }

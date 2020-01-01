@@ -107,7 +107,7 @@ public class Genealdb {
             }
         };
 
-        LOG.trace("received command 'C', will create sample objects in database...");
+        LOG.trace("starting HTTP server...");
         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 
         getRuntime().addShutdownHook(new Thread(() -> {
@@ -149,7 +149,7 @@ public class Genealdb {
     }
 
     private static Expandable buildView(final Persona persona) {
-        final List<Expandable> re = persona.getRoles().stream()
+        final List<Expandable> re = persona.getHadRolesIn().stream()
             .map(Role::getEvent)
             .distinct()
             .sorted()
@@ -162,16 +162,18 @@ public class Genealdb {
                     getXrefDisplay(is.getSameness())))
             .collect(toList());
 
-        return expd(Line.blank(),
-                expd(line(persona.getName())),
-                expd(line(persona.getCites()).withLabel("source")),
-                expd(blank().withLabel("extracted events"), re),
-                expd(blank().withLabel("cross references"), rx));
+        return expd(blank().withLabel("persona"),
+            expd(line(persona.getDescription()).withLabel("description")),
+            expd(line(persona.getNotes()).withLabel("notes")),
+            expd(line(persona.getCites()).withLabel("citation")),
+            expd(blank().withLabel("extracted events"), re),
+            expd(blank().withLabel("cross references"), rx));
     }
 
     private static Expandable buildView(final Citation citation) {
+        // TODO should we list by Persona/Event rather than Event/Persona? Or both?
         final List<Expandable> re = citation.getPersonae().stream()
-            .flatMap(persona -> persona.getRoles().stream())
+            .flatMap(persona -> persona.getHadRolesIn().stream())
             .map(Role::getEvent)
             .distinct()
             .sorted()
@@ -184,11 +186,11 @@ public class Genealdb {
                     getXrefDisplay(sameness)))
             .collect(Collectors.toList());
 
-        return expd(Line.blank(),
-                expd(line(citation.getBrief()).withLabel("brief")),
-                expd(line(citation.getUri()).withLabel("full")),
-                expd(blank().withLabel("extracted events"), re),
-                expd(blank().withLabel("conclusions"), rx));
+        return expd(blank().withLabel("citation"),
+                expd(line(citation.getDescription()).withLabel("description")),
+                expd(line(citation.getUriReferenceNote()).withLabel("reference note")),
+                expd(blank().withLabel("events"), re),
+                expd(blank().withLabel("matchings"), rx));
     }
 
     private static Expandable buildView(final Place place) {
@@ -202,55 +204,55 @@ public class Genealdb {
         final List<Expandable> pcs = new ArrayList<>();
         pc.forEach((key, value) -> pcs.add(expd(getPlaceChangeDisplay(key).withLabel("during"), value)));
 
-        return expd(blank(),
+        return expd(blank().withLabel("place"),
             expd(line(place.getName())),
             expd(blank().withLabel("transfers and transforms"), pcs));
     }
 
     private static void cons(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
-        List<Expandable> others = c.getFrom().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
+        List<Expandable> others = c.getFrom().stream().map(t -> expd(line(t).withLabel("transformed from"))).collect(toList());
         if (others.isEmpty()) {
             others = new ArrayList<>();
-            others.add(expd(line("[created]")));
+            others.add(expd(blank().withLabel("was created")));
         }
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
     }
 
     private static void destr(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
-        List<Expandable> others = c.getTo().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
+        List<Expandable> others = c.getTo().stream().map(t -> expd(line(t).withLabel("transformed to"))).collect(toList());
         if (others.isEmpty()) {
             others = new ArrayList<>();
-            others.add(expd(line("[destroyed]")));
+            others.add(expd(blank().withLabel("was destroyed")));
         }
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
     }
 
     private static void supers(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
-        List<Expandable> others = c.getFromSuperior().stream().map(t -> expd(line(t).withLabel("from"))).collect(toList());
+        List<Expandable> others = c.getFromSuperior().stream().map(t -> expd(line(t).withLabel("was transferred from superior"))).collect(toList());
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
 
-        others = c.getToSuperior().stream().map(t -> expd(line(t).withLabel("to"))).collect(toList());
+        others = c.getToSuperior().stream().map(t -> expd(line(t).withLabel("was transferred to superior"))).collect(toList());
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
     }
 
     private static void gains(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
-        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("gained "))).collect(toList());
+        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("gained as inferior"))).collect(toList());
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
     }
 
     private static void losses(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
-        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("lost "))).collect(toList());
+        List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("lost inferior"))).collect(toList());
         pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
         pc.get(c.getDuring()).addAll(others);
     }
 
     private static Line getPlaceChangeDisplay(final PlaceChange pc) {
-        return line(pc.getDay().getDisplay(), pc.getNotes());
+        return line(pc.getDateHappened().getDisplay(), pc.getNotes());
     }
 
     private static List<Expandable> getXrefDisplay(final Sameness sameness) {
@@ -264,10 +266,14 @@ public class Genealdb {
     }
 
     private static Expandable getEventDisplay(final Event event) {
-        return expd(line(event.getDay().getDisplay(), event.getPlace(), event.getType(), event.getDescription()),
+        return expd(line(event.getDateHappened().getDisplay(), getPlaceName(event), event.getType(), event.getDescription()),
             event.getPlayers().stream()
-                .map(role -> expd(line(role.getPersona()).withLabel(role.getDisplay())))
+                .map(role -> expd(line(role.getPersona()).withLabel(role.getDescription())))
                 .collect(toList()));
+    }
+
+    private static String getPlaceName(Event event) {
+        return Objects.isNull(event.getPlace()) ? "" : event.getPlace().getName();
     }
 
     private static String prePage(final STGroupFile stg, final Expandable x) {

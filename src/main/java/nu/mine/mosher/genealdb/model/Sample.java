@@ -14,50 +14,50 @@ import static nu.mine.mosher.genealdb.model.type.Certainty.MUST;
 
 public class Sample {
     public static Set buildEntities() {
-        final Place svUsa = new Place("United States of America", buildLatLong(44.674000, -103.853100));
+        final Place svUsa = new Place("United States of America", plus("86000000+"), null, "country US (1776-))");
 
         final PlaceChange constitutionUsa = new PlaceChange(1788, "Constitution of USA");
 
-        final Place stNy = new Place("State of New York", buildLatLong(42.9212335, -75.5965432));
+        final Place stNy = new Place("State of New York", plus("87J50000+"), null, "originally a colony");
         new Transfer().of(stNy).to(svUsa).during(constitutionUsa);
-        final Place stVa = new Place("Commonwealth of Virginia", buildLatLong(37.5108711, -78.6663566));
+        final Place stVa = new Place("Commonwealth of Virginia", plus("87930000+"), null, "commonly known as a state");
         new Transfer().of(stVa).to(svUsa).during(constitutionUsa);
-        final Place stCt = new Place("State of Connecticut", buildLatLong(41.5751642, -72.7382577));
+        final Place stCt = new Place("State of Connecticut", plus("87H90000+"), null, "Nutmeg state");
         new Transfer().of(stCt).to(svUsa).during(constitutionUsa);
 
         final PlaceChange foundedChenango = new PlaceChange(1798, "Founding of Chenango County");
-        final Place coChenango = new Place("County of Chenango", null);
+        final Place coChenango = new Place("County of Chenango", plus("87J6G900+"), null, "");
         new Transform().to(coChenango).during(foundedChenango);
         new Transfer().of(coChenango).to(stNy).during(foundedChenango);
 
         final PlaceChange splitChenango = new PlaceChange(1806, "Chenango County split");
-        final Place coMadison = new Place("County of Madison", null);
+        final Place coMadison = new Place("County of Madison", plus("87J6W800+"), null, "");
         new Transform().from(coChenango).to(coChenango).to(coMadison).during(splitChenango);
         new Transfer().of(coMadison).to(stNy).during(splitChenango);
 
         final PlaceChange foundedEarlville = new PlaceChange(1792, "Founding of Earlville (Madison Forks)");
-        final Place pMadisonForks = new Place("Madison Forks", null);
+        final Place pMadisonForks = new Place("Madison Forks", plus("87J6PFQ3+"), null, "");
         new Transform().to(pMadisonForks).during(foundedEarlville);
         new Transfer().of(pMadisonForks).to(coChenango).during(foundedChenango);
         new Transfer().of(pMadisonForks).to(coMadison).during(splitChenango);
         final PlaceChange nameEarlville = new PlaceChange(1835, "Rename Madison Forks to Earlville (upon completion of Chenango Canal to honor Jonas Earl)");
-        final Place pEarlville = new Place("Earlville", null);
+        final Place pEarlville = new Place("Earlville", plus("87J6PFQ3+"), null, "");
         new Transform().from(pMadisonForks).to(pEarlville).during(nameEarlville);
         final PlaceChange incEarlville = new PlaceChange(1887, "Incorporation of Earlville");
-        final Place vilEarlville = new Place("Village of Earlville", null);
+        final Place vilEarlville = new Place("Village of Earlville", plus("87J6PFQ3+"), null, "Earlville is unusual in that it currently (2020) lies within 2 counties");
         new Transform().from(pEarlville).to(vilEarlville).during(incEarlville);
 
         final PlaceChange indepenentCitiesVirginia = new PlaceChange(1871, "Virginia Constitution");
-        final Place radford = new Place("Radford, VA", buildLatLong(37.1275, -80.569444));
+        final Place radford = new Place("Radford, VA", plus("869X4C00+"), null, "independent city");
         new Transform().to(radford).during(indepenentCitiesVirginia);
         new Transfer().of(radford).to(stVa).during(indepenentCitiesVirginia);
 
         final PlaceChange incPulaski = new PlaceChange(1886, "Incorporation of Pulaski");
-        final Place pulaski = new Place("Pulaski, VA", buildLatLong(37.05, -80.772222));
+        final Place pulaski = new Place("Pulaski, VA", plus("869X2600+"), null, "");
         new Transform().to(pulaski).during(incPulaski);
         new Transfer().of(pulaski).to(stVa).during(incPulaski);
 
-        final Place brookPine = new Place("41 Brook Pine Drive, Shelton, CT", buildLatLong(41.316409, -73.126310));
+        final Place brookPine = new Place("41 Brook Pine Drive, Shelton, CT", plus("87H88V8F+HF"), null, "owners: Bacchiocchi; Mosher");
 
 
 
@@ -69,9 +69,9 @@ public class Sample {
 
         final Citation birthCertificate = new Citation("birth certificate of Christopher Alan Mosher", URI.create("http://mosher.mine.nu/sources/mosher_chris_birthcert"));
 
-        final Persona chris = new Persona(birthCertificate, "Christopher Alan /Mosher/");
-        final Persona linda = new Persona(birthCertificate, "Linda Mosher");
-        final Persona barry = new Persona(birthCertificate, "Barry Rexford /Mosher/");
+        final Persona chris = new Persona(birthCertificate, "Christopher Alan /Mosher/", "me");
+        final Persona linda = new Persona(birthCertificate, "Linda Mosher", "maiden name Disosway");
+        final Persona barry = new Persona(birthCertificate, "Barry Rexford /Mosher/", "");
 
         final Certainty certaintyOfDate = new Certainty(10L);
         final Certainty certaintyOfPlace = new Certainty(10L);
@@ -110,14 +110,14 @@ public class Sample {
 
 
         final Citation driversLicense = new Citation("driver's license of Christopher Alan Mosher", URI.create("http://mosher.mine.nu/sources/mosher_chris_driverslicense"));
-        final Persona chris2 = new Persona(driversLicense, "Christopher Alan /Mosher/");
+        final Persona chris2 = new Persona(driversLicense, "Christopher Alan /Mosher/", "me");
         final Event residenceInShelton = new Event(Day.ofYearIso(2016), brookPine, "residence", "of Mosher family in Shelton", certaintyOfDate, certaintyOfPlace, notes);
         new Role(chris2, residenceInShelton, "subject", MUST, notes);
 
 
 
         final Citation myRootPedigreeDatabase = new Citation("Barry and Linda Mosher Recent Genealogy", URI.create("http://mosher.mine.nu/sources/local/root"));
-        final Sameness me = new Sameness(myRootPedigreeDatabase, "same full name");
+        final Sameness me = new Sameness(myRootPedigreeDatabase, "same full name", "these are both me");
         new Is(me, chris, MUST, notes);
         new Is(me, chris2, MUST, notes);
 
@@ -174,6 +174,10 @@ public class Sample {
         set.add(driversLicense);
         set.add(birthCertificate);
         return set;
+    }
+
+    private static OpenLocationCode plus(String s) {
+        return new OpenLocationCode(s);
     }
 
     private static OpenLocationCode buildLatLong(final double latitude, final double longitude) {

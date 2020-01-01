@@ -48,7 +48,10 @@ $endif$
 
 line(x) ::= <%
 $if (x.label)$
-    <b>$val(x.label)$</b>:$\ $
+    <b>$val(x.label)$</b>
+    $if (x.values)$
+        :$\ $
+    $endif$
 $endif$
 $x.values:val(); separator=" "$
 %>

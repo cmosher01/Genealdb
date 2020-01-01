@@ -8,6 +8,7 @@ import org.neo4j.ogm.annotation.typeconversion.Convert;
 import java.net.URI;
 import java.util.*;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
 @NodeEntity
@@ -27,11 +28,12 @@ public class Place {
     private Set<Transfer> gains = new HashSet<>();
 
     private String name;
+    private String notes;
 
-    private URI region; // URL in GIS DB
+    private URI uriRegion; // URL in GIS DB
 
     @Convert(OpenLocationCodeConverter.class)
-    private OpenLocationCode location; // (redundant/summary of info in GIS)
+    private OpenLocationCode pluscodeVicinity; // (redundant/summary of info in GIS)
 
     @SuppressWarnings("unused")
     private Long id;
@@ -42,9 +44,11 @@ public class Place {
     public Place() {
     }
 
-    public Place(final String name, final OpenLocationCode location) {
-        this.name = name;
-        this.location = location;
+    public Place(final String name, final OpenLocationCode pluscodeVicinity, final URI uriRegion, final String notes) {
+        this.name = Objects.requireNonNull(name);
+        this.pluscodeVicinity = pluscodeVicinity;
+        this.uriRegion = uriRegion;
+        this.notes = Objects.requireNonNull(notes);
     }
 
     void addCtor(final Transform place) {
@@ -67,10 +71,16 @@ public class Place {
         this.gains.add(place);
     }
 
-//    public double distance(final Place that) {
-//        return this.location.distance(that.location);
-//    }
-
+    @Override
+    public String toString() {
+        return toStringHelper(this)
+            .omitNullValues()
+            .add("name", this.name)
+            .add("uriRegion", this.uriRegion)
+            .add("pluscodeVicinity", this.pluscodeVicinity)
+            .add("notes", this.notes)
+            .toString();
+    }
 
     public Long getId() {
         return this.id;
@@ -80,8 +90,8 @@ public class Place {
         return this.name;
     }
 
-    public URI getRegion() {
-        return this.region;
+    public URI getUriRegion() {
+        return this.uriRegion;
     }
 
     public Set<Transform> getConstruction() {
@@ -104,8 +114,11 @@ public class Place {
         return Collections.unmodifiableSet(this.losses);
     }
 
-    @Override
-    public String toString() {
-        return this.name;
+    public String getNotes() {
+        return this.notes;
+    }
+
+    public OpenLocationCode getPluscodeVicinity() {
+        return this.pluscodeVicinity;
     }
 }

@@ -22,9 +22,9 @@ public class Citation implements Comparable<Citation> {
     @Relationship(type = "CITES", direction = Relationship.INCOMING)
     private Set<Persona> personae = new HashSet<>();
 
-    private String brief;
+    private String description;
     @Convert(UriConverter.class)
-    private URI uri;
+    private URI uriReferenceNote;
 
     @SuppressWarnings("unused")
     private Long id;
@@ -35,9 +35,9 @@ public class Citation implements Comparable<Citation> {
     public Citation() {
     }
 
-    public Citation(final String brief, final URI uri) {
-        this.brief = Objects.requireNonNull(brief);
-        this.uri = uri;
+    public Citation(final String description, final URI uriReferenceNote) {
+        this.description = Objects.requireNonNull(description);
+        this.uriReferenceNote = uriReferenceNote;
     }
 
     public void addLink(final Persona persona) {
@@ -56,15 +56,15 @@ public class Citation implements Comparable<Citation> {
             return false;
         }
         final Citation that = (Citation) object;
-        if (this.uri != null) {
-            return this.uri.equals(that.uri);
+        if (this.uriReferenceNote != null) {
+            return this.uriReferenceNote.equals(that.uriReferenceNote);
         }
-        return !this.brief.isEmpty() && this.brief.equals(that.brief);
+        return !this.description.isEmpty() && this.description.equals(that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.uri, this.brief);
+        return Objects.hash(this.uriReferenceNote, this.description);
     }
 
     @Override
@@ -72,32 +72,23 @@ public class Citation implements Comparable<Citation> {
         return ComparisonChain
             .start()
             .compare(
-                this.uri,
-                that.uri,
+                this.uriReferenceNote,
+                that.uriReferenceNote,
                 Ordering
                     .natural()
                     .nullsLast())
-            .compare(this.brief, that.brief)
+            .compare(this.description, that.description)
             .result();
     }
 
     @Override
     public String toString() {
         return toStringHelper(this)
-            .add("brief", this.brief)
-            .add("uri", this.uri)
+            .add("description", this.description)
+            .add("uriReferenceNote", this.uriReferenceNote)
             .toString();
     }
 
-
-
-    public String getDisplay() {
-        String s = this.brief;
-        if (Objects.nonNull(this.uri)) {
-            s += " ( " + this.uri + " )";
-        }
-        return s;
-    }
 
 
     public Long getId() {
@@ -112,11 +103,11 @@ public class Citation implements Comparable<Citation> {
         return unmodifiableSet(this.personae);
     }
 
-    public String getBrief() {
-        return this.brief;
+    public String getDescription() {
+        return this.description;
     }
 
-    public URI getUri() {
-        return this.uri;
+    public URI getUriReferenceNote() {
+        return this.uriReferenceNote;
     }
 }

@@ -44,7 +44,8 @@ public class Is {
     @Override
     public String toString() {
         return toStringHelper(this)
-            .add("cert", this.certainty)
+            .omitNullValues()
+            .add("certainty", this.certainty)
             .add("notes", this.notes)
             .toString();
     }
@@ -53,10 +54,6 @@ public class Is {
 
     public Long getId() {
         return this.id;
-    }
-
-    public String getDisplay() {
-        return "(" + this.certainty + ")";
     }
 
     public Sameness getSameness() {

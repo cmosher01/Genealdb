@@ -9,7 +9,6 @@ import org.neo4j.ogm.annotation.typeconversion.Convert;
 
 import java.util.*;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Collections.unmodifiableSet;
 
 
@@ -19,7 +18,7 @@ public class Event implements Comparable<Event> {
     private Set<Role> players = new HashSet<>();
 
     @Convert(DayConverter.class)
-    private Day happenedOn;
+    private Day dateHappened;
 
     private Place place;
 
@@ -28,10 +27,10 @@ public class Event implements Comparable<Event> {
     private String description;
 
     @Convert(CertaintyConverter.class)
-    private Certainty certaintyOfDate;
+    private Certainty certaintyDate;
 
     @Convert(CertaintyConverter.class)
-    private Certainty certaintyOfPlace;
+    private Certainty certaintyPlace;
 
     private String notes;
 
@@ -45,13 +44,13 @@ public class Event implements Comparable<Event> {
     }
 
     public Event(
-        final Day happenedOn, final Place place, final String type, final String description, final Certainty certaintyOfDate, final Certainty certaintyOfPlace, final String notes) {
-        this.happenedOn = Objects.requireNonNull(happenedOn);
+        final Day dateHappened, final Place place, final String type, final String description, final Certainty certaintyDate, final Certainty certaintyPlace, final String notes) {
+        this.dateHappened = Objects.requireNonNull(dateHappened);
         this.place = place;
         this.type = Objects.requireNonNull(type);
         this.description = Objects.requireNonNull(description);
-        this.certaintyOfDate = Objects.requireNonNull(certaintyOfDate);
-        this.certaintyOfPlace = Objects.requireNonNull(certaintyOfPlace);
+        this.certaintyDate = Objects.requireNonNull(certaintyDate);
+        this.certaintyPlace = Objects.requireNonNull(certaintyPlace);
         this.notes = Objects.requireNonNull(notes);
     }
 
@@ -63,14 +62,7 @@ public class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(final Event that) {
-        return this.happenedOn.compareTo(that.happenedOn);
-    }
-
-    @Override
-    public String toString() {
-        return toStringHelper(this)
-            .addValue(getDisplay())
-            .toString();
+        return this.dateHappened.compareTo(that.dateHappened);
     }
 
 
@@ -79,20 +71,24 @@ public class Event implements Comparable<Event> {
         return this.id;
     }
 
-    public String getDisplay() {
-        return this.happenedOn.getDisplay() + "|" + this.place + "|" + this.type + "|" + this.description;
-    }
-
     public Set<Role> getPlayers() {
         return unmodifiableSet(this.players);
     }
 
-    public Day getDay() {
-        return this.happenedOn;
+    public Day getDateHappened() {
+        return this.dateHappened;
+    }
+
+    public Certainty getCertaintyDate() {
+        return this.certaintyDate;
     }
 
     public Place getPlace() {
         return this.place;
+    }
+
+    public Certainty getCertaintyPlace() {
+        return this.certaintyPlace;
     }
 
     public String getType() {
@@ -101,14 +97,6 @@ public class Event implements Comparable<Event> {
 
     public String getDescription() {
         return this.description;
-    }
-
-    public Certainty getCertaintyOfDate() {
-        return this.certaintyOfDate;
-    }
-
-    public Certainty getCertaintyOfPlace() {
-        return this.certaintyOfPlace;
     }
 
     public String getNotes() {
