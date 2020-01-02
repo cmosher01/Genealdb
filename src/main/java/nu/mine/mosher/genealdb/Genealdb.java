@@ -8,7 +8,7 @@ import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
 import nu.mine.mosher.genealdb.model.entity.place.*;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
-import nu.mine.mosher.genealdb.model.type.ObjectRef;
+import nu.mine.mosher.genealdb.model.type.*;
 import nu.mine.mosher.genealdb.view.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.ogm.driver.Driver;
@@ -248,14 +248,20 @@ public class Genealdb {
         return new PlusLink(pluscodeVicinity.getCode());
     }
 
+    private static final PlaceChange DURING_UNKOWN = new PlaceChange(Day.unknownIso(1,1,1), "[unknown]");
+
+    private static PlaceChange during(PlaceChange during) {
+        return Objects.isNull(during) ? DURING_UNKOWN : during;
+    }
+
     private static void cons(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
         List<Expandable> others = c.getFrom().stream().map(t -> expd(line(t).withLabel("transformed from"))).collect(toList());
         if (others.isEmpty()) {
             others = new ArrayList<>();
             others.add(expd(blank().withLabel("was created")));
         }
-        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
-        pc.get(c.getDuring()).addAll(others);
+        pc.computeIfAbsent(during(c.getDuring()), k -> new ArrayList<>());
+        pc.get(during(c.getDuring())).addAll(others);
     }
 
     private static void destr(Transform c, SortedMap<PlaceChange, List<Expandable>> pc) {
@@ -264,24 +270,24 @@ public class Genealdb {
             others = new ArrayList<>();
             others.add(expd(blank().withLabel("was destroyed")));
         }
-        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
-        pc.get(c.getDuring()).addAll(others);
+        pc.computeIfAbsent(during(c.getDuring()), k -> new ArrayList<>());
+        pc.get(during(c.getDuring())).addAll(others);
     }
 
     private static void supers(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
         List<Expandable> others = c.getFromSuperior().stream().map(t -> expd(line(t).withLabel("was transferred from superior"))).collect(toList());
-        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
-        pc.get(c.getDuring()).addAll(others);
+        pc.computeIfAbsent(during(c.getDuring()), k -> new ArrayList<>());
+        pc.get(during(c.getDuring())).addAll(others);
 
         others = c.getToSuperior().stream().map(t -> expd(line(t).withLabel("was transferred to superior"))).collect(toList());
-        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
-        pc.get(c.getDuring()).addAll(others);
+        pc.computeIfAbsent(during(c.getDuring()), k -> new ArrayList<>());
+        pc.get(during(c.getDuring())).addAll(others);
     }
 
     private static void gains(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {
         List<Expandable> others = c.getOfInferior().stream().map(t -> expd(line(t).withLabel("gained as inferior"))).collect(toList());
-        pc.computeIfAbsent(c.getDuring(), k -> new ArrayList<>());
-        pc.get(c.getDuring()).addAll(others);
+        pc.computeIfAbsent(during(c.getDuring()), k -> new ArrayList<>());
+        pc.get(during(c.getDuring())).addAll(others);
     }
 
     private static void losses(Transfer c, SortedMap<PlaceChange, List<Expandable>> pc) {

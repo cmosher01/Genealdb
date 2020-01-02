@@ -28,7 +28,11 @@ public class PlaceChange implements Comparable<PlaceChange> {
     }
 
     public PlaceChange(final int year, final String notes) {
-        this.dateHappened = Day.ofYearIso(year);
+        this(Day.ofYearIso(year), notes);
+    }
+
+    public PlaceChange(final Day day, final String notes) {
+        this.dateHappened = Objects.requireNonNull(day);
         this.notes = Objects.requireNonNull(notes);
     }
 

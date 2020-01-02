@@ -57,10 +57,59 @@ public class Sample {
         new Transform().to(pulaski).during(incPulaski);
         new Transfer().of(pulaski).to(stVa).during(incPulaski);
 
+        final Place pColonies = new Place("British colonies in America", plus("87000000+"), null, "");
+        final PlaceChange pColonieEstab = new PlaceChange(Day.ofIso(1607,5,14), "Jamestown, Virginia, established");
+        new Transform().to(pColonies).during(pColonieEstab);
+
+        final Place pNewEnglandCols = new Place("New England colonies", plus("87JC0000+"),null, "");
+        final PlaceChange pNewEnglandColsEstab = new PlaceChange(Day.ofIso(1620, 11, 21), "Mayflower Compact");
+        new Transform().to(pNewEnglandCols).during(pNewEnglandColsEstab);
+
+        final Place pNewEnglandConf = new Place("United Colonies of New England", plus("87JC0000+"),null, "");
+        final PlaceChange pUnitedColsOfNewEngConf = new PlaceChange(Day.ofIso(1643, 5, 19), "Articles of Confederation of the United Colonies of New England");
+        new Transform().from(pNewEnglandCols).to(pNewEnglandConf).during(pUnitedColsOfNewEngConf);
+        new Transfer().of(pNewEnglandConf).to(pColonies).during(pUnitedColsOfNewEngConf);
+
+        final Place pNewEnglandDom = new Place("Dominion of New England", plus("87JC0000+"),null, "");
+        final PlaceChange pNewEnglandDomEstab = new PlaceChange(Day.ofIso(1686, 5, 25), "Joseph Dudley took charge of Massachusetts");
+        new Transform().from(pNewEnglandConf).to(pNewEnglandDom).during(pNewEnglandDomEstab);
+        new Transfer().of(pNewEnglandDom).to(pColonies).during(pNewEnglandDomEstab);
+
+        final Place pNewEnglandCols2 = new Place("New England colonies", plus("87JC0000+"),null, "");
+        final PlaceChange pNewEnglandCols2Estab = new PlaceChange(Day.ofIso(1689, 4, 18), "Boston Revolt");
+        new Transform().from(pNewEnglandDom).to(pNewEnglandCols2).during(pNewEnglandCols2Estab);
+        new Transfer().of(pNewEnglandCols2).to(pColonies).during(pNewEnglandCols2Estab);
+
+        final Place pNewEnglandReg = new Place("New England region", plus("87JC0000+"),null, "");
+        new Transform().from(pNewEnglandCols2).to(pNewEnglandReg).during(constitutionUsa);
+        new Transfer().of(pNewEnglandReg).to(svUsa).during(constitutionUsa);
+
+        //final Place pConnCol = new Place("Colony of Connecticut");
+        //pConnCol.self(LocalDate.of(1636,3,3));
+        //pConnCol.in(pNewEnglandCols);
+        //pConnCol.in(pNewEnglandConf);
+        //pConnCol.in(pNewEnglandDom);
+        //pConnCol.in(pNewEnglandCols2);
+        //final Place pNewHavenCol = new Place("Colony of New Haven");
+        //pNewHavenCol.self(LocalDate.of(1637,6,26));
+        //pNewHavenCol.in(pNewEnglandCols);
+        //pNewHavenCol.in(pNewEnglandConf);
+        //pNewHavenCol.became(pConnCol, LocalDate.of(1664, 12, 14));
+        //final Place pSaybrookCol = new Place("Colony of Saybrook");
+        //pSaybrookCol.self(LocalDate.of(1635, 11, 24));
+        //pSaybrookCol.in(pNewEnglandCols);
+        //pSaybrookCol.became(pConnCol, LocalDate.of(1644, 12, 5));
+
+        new Transfer().of(stCt).to(pNewEnglandReg).during(constitutionUsa);
+
+        final Place pFairfieldCo = new Place("County of Fairfield", plus("87H88M00+"), null, "");
+        new Transfer().of(pFairfieldCo).to(stCt);
+
+        final Place pShelton = new Place("City of Shelton", plus("87H87V00+"), null, "");
+        new Transfer().of(pShelton).to(pFairfieldCo);
+
         final Place brookPine = new Place("41 Brook Pine Drive, Shelton, CT", plus("87H88V8F+HF"), null, "owners: Bacchiocchi; Mosher");
-
-
-
+        new Transfer().of(brookPine).to(pShelton);
 
 
 
@@ -122,51 +171,6 @@ public class Sample {
         new Is(me, chris2, MUST, notes);
 
 
-        //final Place pColonies = new Place("British colonies in America");
-        //pColonies.self(LocalDate.of(1607, 5, 4));
-        //
-        //final Place pUSA = new Place("United States of America");
-        //pColonies.became(pUSA, LocalDate.of(1776, 7, 4));
-        //
-        //final Place pNewEnglandCols = new Place("New England colonies");
-        //pNewEnglandCols.self(LocalDate.of(1620, 4, 10));
-        //pNewEnglandCols.in(pColonies);
-        //
-        //final Place pNewEnglandConf = new Place("United Colonies of New England");
-        //pNewEnglandConf.in(pColonies);
-        //pNewEnglandCols.became(pNewEnglandConf, LocalDate.of(1643, 5, 19));
-        //
-        //final Place pNewEnglandDom = new Place("Dominion of New England");
-        //pNewEnglandDom.in(pColonies);
-        //pNewEnglandConf.became(pNewEnglandDom, LocalDate.of(1686, 5, 25));
-        //
-        //final Place pNewEnglandCols2 = new Place("New England colonies");
-        //pNewEnglandCols2.in(pColonies);
-        //pNewEnglandDom.became(pNewEnglandCols2, LocalDate.of(1689, 4, 18));
-        //
-        //final Place pNewEnglandReg = new Place("New England region");
-        //pNewEnglandReg.in(pUSA);
-        //pNewEnglandCols2.became(pNewEnglandReg, LocalDate.of(1776, 7, 4));
-        //
-        //final Place pConnCol = new Place("Colony of Connecticut");
-        //pConnCol.self(LocalDate.of(1636,3,3));
-        //pConnCol.in(pNewEnglandCols);
-        //pConnCol.in(pNewEnglandConf);
-        //pConnCol.in(pNewEnglandDom);
-        //pConnCol.in(pNewEnglandCols2);
-        //final Place pNewHavenCol = new Place("Colony of New Haven");
-        //pNewHavenCol.self(LocalDate.of(1637,6,26));
-        //pNewHavenCol.in(pNewEnglandCols);
-        //pNewHavenCol.in(pNewEnglandConf);
-        //pNewHavenCol.became(pConnCol, LocalDate.of(1664, 12, 14));
-        //final Place pSaybrookCol = new Place("Colony of Saybrook");
-        //pSaybrookCol.self(LocalDate.of(1635, 11, 24));
-        //pSaybrookCol.in(pNewEnglandCols);
-        //pSaybrookCol.became(pConnCol, LocalDate.of(1644, 12, 5));
-        //
-        //final Place pConn = new Place("State of Connecticut");
-        //pConn.in(pNewEnglandReg);
-        //pConnCol.became(pConn, LocalDate.of(1788, 1, 9));
 
 
         final HashSet set = new HashSet();
