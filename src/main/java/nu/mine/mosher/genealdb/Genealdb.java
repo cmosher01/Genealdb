@@ -182,26 +182,31 @@ public class Genealdb {
     }
 
     private static Expandable buildView(final Citation citation) {
-        // TODO should we list by Persona/Event rather than Event/Persona? Or both?
+        final List<Expandable> rp = citation.getPersonae()
+            .stream()
+            .map(Genealdb::getPersonaDisplay)
+            .collect(toList());
+
         final List<Expandable> re = citation.getPersonae().stream()
             .flatMap(persona -> persona.getHadRolesIn().stream())
             .map(Role::getEvent)
             .distinct()
             .sorted()
             .map(Genealdb::getEventDisplay)
-            .collect(Collectors.toList());
+            .collect(toList());
 
         final List<Expandable> rx = citation.getMatchings().stream()
             .map(sameness ->
                 expd(line(sameness.getRationale()),
                     getXrefDisplay(sameness)))
-            .collect(Collectors.toList());
+            .collect(toList());
 
         return expd(blank().withLabel("citation"),
-                expd(line(citation.getDescription()).withLabel("description")),
-                expd(line(citation.getUriReferenceNote()).withLabel("reference note")),
-                expd(blank().withLabel("events"), re),
-                expd(blank().withLabel("matchings"), rx));
+            expd(line(citation.getDescription()).withLabel("description")),
+            expd(line(citation.getUriReferenceNote()).withLabel("reference note")),
+            expd(blank().withLabel("extractions by persona"), rp),
+            expd(blank().withLabel("extractions by event"), re),
+            expd(blank().withLabel("matchings"), rx));
     }
 
     private static Expandable buildView(final Place place) {
@@ -310,11 +315,29 @@ public class Genealdb {
             .collect(toList());
     }
 
-    private static Expandable getEventDisplay(final Event event) {
-        return expd(line(event.getDateHappened().getDisplay(), event.getPlace(), event.getType(), event.getDescription()),
-            event.getPlayers().stream()
-                .map(role -> expd(line(role.getPersona()).withLabel(role.getDescription())))
+    private static Expandable getPersonaDisplay(Persona persona) {
+        return expd(line(persona).withLabel("persona"),
+            persona
+                .getHadRolesIn()
+                .stream()
+                .sorted(Genealdb::byEvent)
+                .map(role -> expd(getEventLine(role.getEvent()).withLabel("("+role.getCertainty()+") was "+role.getDescription()+" in")))
                 .collect(toList()));
+    }
+
+    private static int byEvent(Role a, Role b) {
+        return a.getEvent().compareTo(b.getEvent());
+    }
+
+    private static Expandable getEventDisplay(final Event event) {
+        return expd(getEventLine(event).withLabel("event"),
+            event.getPlayers().stream()
+                .map(role -> expd(line(role.getPersona()).withLabel("("+role.getCertainty()+") "+role.getDescription())))
+                .collect(toList()));
+    }
+
+    private static Line getEventLine(final Event event) {
+        return line(event.getDateHappened().getDisplay(), event.getPlace(), event.getType(), event.getDescription());
     }
 
     private static String prePage(final STGroupFile stg, final Expandable x) {

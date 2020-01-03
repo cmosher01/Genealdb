@@ -16,14 +16,14 @@ public class Sample {
     public static Set buildEntities() {
         final Place svUsa = new Place("United States of America", plus("86000000+"), null, "country US (1776-)");
 
-        final PlaceChange constitutionUsa = new PlaceChange(1788, "Constitution of USA");
+        final PlaceChange indepUSA = new PlaceChange(Day.ofIso(1776, 7, 4), "Declaration of Independence of USA");
 
         final Place stNy = new Place("State of New York", plus("87J50000+"), null, "originally a colony");
-        new Transfer().of(stNy).to(svUsa).during(constitutionUsa);
+        new Transfer().of(stNy).to(svUsa).during(indepUSA);
         final Place stVa = new Place("Commonwealth of Virginia", plus("87930000+"), null, "commonly known as a state");
-        new Transfer().of(stVa).to(svUsa).during(constitutionUsa);
+        new Transfer().of(stVa).to(svUsa).during(indepUSA);
         final Place stCt = new Place("State of Connecticut", plus("87H90000+"), null, "Nutmeg state");
-        new Transfer().of(stCt).to(svUsa).during(constitutionUsa);
+        new Transfer().of(stCt).to(svUsa).during(indepUSA);
 
         final PlaceChange foundedChenango = new PlaceChange(1798, "Founding of Chenango County");
         final Place coChenango = new Place("County of Chenango", plus("87J6G900+"), null, "");
@@ -81,8 +81,10 @@ public class Sample {
         new Transfer().of(pNewEnglandCols2).to(pColonies).during(pNewEnglandCols2Estab);
 
         final Place pNewEnglandReg = new Place("New England region", plus("87JC0000+"),null, "");
-        new Transform().from(pNewEnglandCols2).to(pNewEnglandReg).during(constitutionUsa);
-        new Transfer().of(pNewEnglandReg).to(svUsa).during(constitutionUsa);
+        new Transform().from(pNewEnglandCols2).to(pNewEnglandReg).during(indepUSA);
+        new Transfer().of(pNewEnglandReg).to(svUsa).during(indepUSA);
+
+        new Transform().from(pColonies).to(svUsa).during(indepUSA);
 
         //final Place pConnCol = new Place("Colony of Connecticut");
         //pConnCol.self(LocalDate.of(1636,3,3));
@@ -100,7 +102,7 @@ public class Sample {
         //pSaybrookCol.in(pNewEnglandCols);
         //pSaybrookCol.became(pConnCol, LocalDate.of(1644, 12, 5));
 
-        new Transfer().of(stCt).to(pNewEnglandReg).during(constitutionUsa);
+        new Transfer().of(stCt).to(pNewEnglandReg).during(indepUSA);
 
         final Place pFairfieldCo = new Place("County of Fairfield", plus("87H88M00+"), null, "");
         new Transfer().of(pFairfieldCo).to(stCt);

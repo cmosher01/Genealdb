@@ -41,12 +41,12 @@ node.Sameness {
   caption: "sameness ({rationale})";
   color: #FB95AF;
   border-color: #E0849B;
-  text-color-internal: #FFFFFF;
+  text-color-internal: #000000;
   diameter: 95px;
 }
 
 node.Event {
-  caption: "{type} {description}";
+  caption: "{year} {type} {description}";
   color: #6DCE9E;
   border-color: #60B58B;
   diameter: 65px;
@@ -69,16 +69,16 @@ node.PlaceChange {
 
 node.Transfer {
   caption: "xfer";
-  color: #4C8EDA;
-  border-color: #2870c2;
-  text-color-internal: #FFFFFF;
+  color: #D9C8AE;
+  border-color: #f36924;
+  text-color-internal: #604A0E;
   diameter: 25px;
 }
 
 node.Transform {
   caption: "xfrm";
-  color: #D9C8AE;
-  border-color: #c0a378;
+  color: #8DCC93;
+  border-color: #f36924;
   text-color-internal: #604A0E;
   diameter: 25px;
 }
@@ -101,10 +101,9 @@ relationship.HAD_ROLE_IN {
 
 relationship.IS {
   caption: "({certainty}!) is";
-  color: #FFD86E;
-  border-color: #EDBA39;
-  text-color-internal: #604A0E;
-  shaft-width: 25px;
+  color: #FB95AF;
+  text-color-internal: #000000;
+  shaft-width: 15px;
 }
 
 relationship.IN {
