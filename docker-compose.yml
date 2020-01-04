@@ -2,18 +2,16 @@
 version: "3.7"
 
 volumes:
-  neo4j:
+  db:
 
 services:
   neo4j:
-    image: neo4j
+    build: ./neo4j/
     volumes:
-      - neo4j:/data
-    ports:
+      - db:/data
+    ports: # these are exposed only to allow access to neo4j browser
       - "7474:7474"
       - "7687:7687"
-    environment:
-      NEO4J_AUTH: none
   genealdb:
     build: ./
     depends_on:
