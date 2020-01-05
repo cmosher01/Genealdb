@@ -1,8 +1,6 @@
 package nu.mine.mosher.genealdb;
 
 import com.google.openlocationcode.OpenLocationCode;
-import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import nu.mine.mosher.genealdb.model.Sample;
 import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.*;
@@ -10,6 +8,8 @@ import nu.mine.mosher.genealdb.model.entity.place.*;
 import nu.mine.mosher.genealdb.model.entity.source.Citation;
 import nu.mine.mosher.genealdb.model.type.*;
 import nu.mine.mosher.genealdb.view.*;
+import org.nanohttpd.protocols.http.*;
+import org.nanohttpd.protocols.http.response.*;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.ogm.driver.Driver;
 import org.neo4j.ogm.drivers.bolt.driver.BoltDriver;
@@ -18,15 +18,16 @@ import org.slf4j.*;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.stringtemplate.v4.STGroupFile;
 
-import java.io.IOException;
-import java.net.*;
+import java.io.*;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Runtime.getRuntime;
-import static java.util.stream.Collectors.toList;
-import static nu.mine.mosher.genealdb.view.Expandable.expd;
+import static java.util.stream.Collectors.*;
+import static nu.mine.mosher.genealdb.view.Expandable.*;
 import static nu.mine.mosher.genealdb.view.Line.*;
+
+
 
 public class Genealdb {
     private static final Logger LOG;
@@ -73,45 +74,42 @@ public class Genealdb {
 
         final ObjectRef init = initDataset(neo);
 
-        final NanoHTTPD server = new NanoHTTPD(8080) {
-            @Override
-            @SuppressWarnings({"rawtypes", "unchecked"})
-            public Response serve(final IHTTPSession http) {
-                final ObjectRef objRef = getObjectRef(http, init);
+        final NanoHTTPD server = new NanoHTTPD(8080) {};
 
-                final Object object = neo.load(objRef.cls(), objRef.id(), 3);
-                if (Objects.isNull(object)) {
-                    return newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "page not found");
-                }
-                final Expandable view;
-                if (objRef.cls().equals(Citation.class)) {
-                    final Citation entity = (Citation)object;
-                    view = buildView(entity);
-                } else if (objRef.cls().equals(Persona.class)) {
-                    final Persona entity = (Persona)object;
-                    view = buildView(entity);
-                } else if (objRef.cls().equals(Place.class)) {
-                    final Place entity = (Place)object;
-                    view = buildView(entity);
-                } else {
-                    view = Expandable.expd(blank());
-                }
+        server.setHTTPHandler(http -> {
+            final String uri = http.getUri();
+            LOG.info("received request URI: {}", uri);
 
-                return newFixedLengthResponse(prePage(stg, view));
+            final ObjectRef objRef = getObjectRef(http, init);
+
+            @SuppressWarnings("unchecked")
+            final Object object = neo.load(objRef.cls(), objRef.id(), 3);
+            if (Objects.isNull(object)) {
+                return Response.newFixedLengthResponse(Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "page not found");
             }
-        };
+
+            final Expandable view;
+            if (objRef.cls().equals(Citation.class)) {
+                final Citation entity = (Citation)object;
+                view = buildView(entity);
+            } else if (objRef.cls().equals(Persona.class)) {
+                final Persona entity = (Persona)object;
+                view = buildView(entity);
+            } else if (objRef.cls().equals(Place.class)) {
+                final Place entity = (Place)object;
+                view = buildView(entity);
+            } else {
+                view = Expandable.expd(blank());
+            }
+
+            return Response.newFixedLengthResponse(prePage(stg, view));
+        });
 
         LOG.trace("starting HTTP server...");
         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 
-        getRuntime().addShutdownHook(new Thread(() -> {
-            LOG.trace("stopping ...");
-            System.out.flush();
-            System.err.flush();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             factoryNeo.close();
-            LOG.trace("stopping HTTP server...");
-            System.out.flush();
-            System.err.flush();
             server.stop();
         }));
     }

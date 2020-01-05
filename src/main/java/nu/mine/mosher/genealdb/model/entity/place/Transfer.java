@@ -47,6 +47,12 @@ public class Transfer {
         return this;
     }
 
+
+
+    public Long getId() {
+        return this.id;
+    }
+
     public Set<Place> getOfInferior() {
         return Collections.unmodifiableSet(this.ofInferior);
     }

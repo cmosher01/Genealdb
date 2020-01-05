@@ -1,4 +1,4 @@
-﻿﻿node {
+node {
   diameter: 80px;
   color: #FFD86E;
   border-color: #EDBA39;

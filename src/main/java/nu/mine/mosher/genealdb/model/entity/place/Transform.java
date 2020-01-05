@@ -37,6 +37,12 @@ public class Transform {
         return this;
     }
 
+
+
+    public Long getId() {
+        return this.id;
+    }
+
     public Set<Place> getFrom() {
         return Collections.unmodifiableSet(this.from);
     }
