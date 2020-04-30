@@ -1,4 +1,4 @@
-# Genealogy Research Database
+# GenealDB
 
 Copyright © 1998–2020, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com
 
@@ -8,23 +8,26 @@ Copyright © 1998–2020, by Christopher Alan Mosher, Shelton, Connecticut, USA,
 [![Build status](https://ci.appveyor.com/api/projects/status/TODO?svg=true)](https://ci.appveyor.com/project/cmosher01/Genealdb)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 
-## Genealogical Database System
+## Genealogical Research Database System
 
 ![image](./system.svg)
 
-1. Images
-   photographs, facsimiles
+1. Images \
+   photographs, facsimiles \
    [IIPImage](https://iipimage.sourceforge.io/)
-1. Sources
-   TEI format: transcripts, citations
+1. Sources \
+   TEI format: transcripts, citations \
    [Tei-Server](https://github.com/cmosher01/Tei-Server)
-1. GIS database
-   geographic areas (of places)
+1. GIS database \
+   geographic areas (of places) \
    [TerraLib](http://www.terralib.org/)
-1. Genealogical data storage (graph database)
-   extractions (personae, events), conclusions, historical places
+1. Genealogical data storage (graph database) \
+   extractions (personae, events), conclusions, historical places \
    [Neo4j](https://neo4j.com/)
-1. GenealDB web server
+1. Universal access \
+   unicode fonts and stylesheets \
+   [PlainWebCss](https://github.com/cmosher01/PlainWebCss)
+1. GenealDB web server \
    browser-based user interface for Genealogical data storage
 
 ## GenealDB
