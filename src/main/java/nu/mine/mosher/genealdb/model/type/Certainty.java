@@ -1,6 +1,8 @@
 package nu.mine.mosher.genealdb.model.type;
 
-public class Certainty implements Comparable<Certainty> {
+import java.io.Serializable;
+
+public class Certainty implements Serializable, Comparable<Certainty> {
     public static final Certainty UNKNOWN = new Certainty(0L);
     public static final Certainty MUST = new Certainty(10L);
     public static final Certainty MUST_NOT = new Certainty(-10L);

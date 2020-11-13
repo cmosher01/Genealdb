@@ -18,6 +18,7 @@ Copyright © 1998–2020, by Christopher Alan Mosher, Shelton, Connecticut, USA,
 1. Sources \
    TEI format: transcripts, citations \
    [Tei-Server](https://github.com/cmosher01/Tei-Server)
+   [Evidence Explained](http://www.worldcat.org/oclc/1054383552)
 1. GIS database \
    geographic areas (of places) \
    [TerraLib](http://www.terralib.org/)

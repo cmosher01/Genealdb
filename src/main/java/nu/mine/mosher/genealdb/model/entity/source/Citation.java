@@ -1,52 +1,47 @@
 package nu.mine.mosher.genealdb.model.entity.source;
 
 
-import com.google.common.collect.*;
 import nu.mine.mosher.genealdb.model.entity.conclude.Sameness;
 import nu.mine.mosher.genealdb.model.entity.extract.Persona;
 import nu.mine.mosher.genealdb.model.type.convert.UriConverter;
-import org.neo4j.ogm.annotation.Relationship;
+import nu.mine.mosher.graph.datawebapp.util.GraphEntity;
+import org.neo4j.ogm.annotation.*;
 import org.neo4j.ogm.annotation.typeconversion.Convert;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.*;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-import static java.util.Collections.unmodifiableSet;
+
+@NodeEntity(label=Citation.TYPE)
+public class Citation extends GraphEntity implements Serializable, Comparable<Citation> {
+    public static final String TYPE = "Citation";
+
+    @Property public String description;
+    @Convert(UriConverter.class) public URI uriReferenceNote;
+
+    @Relationship(type=SamenessCites.TYPE, direction=Relationship.INCOMING) public Set<Sameness> matchings = new HashSet<>();
+    @Relationship(type=PersonaCites.TYPE, direction=Relationship.INCOMING) public Set<Persona> personae = new HashSet<>();
 
 
 
-public class Citation implements Comparable<Citation> {
-    @Relationship(type = "CITES", direction = Relationship.INCOMING)
-    private Set<Sameness> matchings = new HashSet<>();
-    @Relationship(type = "CITES", direction = Relationship.INCOMING)
-    private Set<Persona> personae = new HashSet<>();
 
-    private String description;
-    @Convert(UriConverter.class)
-    private URI uriReferenceNote;
-
-    @SuppressWarnings("unused")
-    private Long id;
-
-
-
-    @SuppressWarnings("unused")
-    public Citation() {
-    }
-
-    public Citation(final String description, final URI uriReferenceNote) {
-        this.description = Objects.requireNonNull(description);
-        this.uriReferenceNote = uriReferenceNote;
-    }
-
-    public void addLink(final Persona persona) {
-        this.personae.add(Objects.requireNonNull(persona));
-    }
-
-    public void addLink(final Sameness sameness) {
-        this.matchings.add(Objects.requireNonNull(sameness));
-    }
+    //    @SuppressWarnings("unused")
+//    public Citation() {
+//    }
+//
+//    public Citation(final String description, final URI uriReferenceNote) {
+//        this.description = Objects.requireNonNull(description);
+//        this.uriReferenceNote = uriReferenceNote;
+//    }
+//
+//    public void addLink(final Persona persona) {
+//        this.personae.add(Objects.requireNonNull(persona));
+//    }
+//
+//    public void addLink(final Sameness sameness) {
+//        this.matchings.add(Objects.requireNonNull(sameness));
+//    }
 
 
 
@@ -69,49 +64,37 @@ public class Citation implements Comparable<Citation> {
 
     @Override
     public int compareTo(final Citation that) {
-        return ComparisonChain
-            .start()
-            .compare(
-                this.uriReferenceNote,
-                that.uriReferenceNote,
-                Ordering
-                    .natural()
-                    .nullsLast())
-            .compare(this.description, that.description)
-            .result();
+        return this.description.compareTo(that.description);
     }
 
     @Override
     public String toString() {
-        return toStringHelper(this)
-            .add("description", this.description)
-            .add("uriReferenceNote", this.uriReferenceNote)
-            .toString();
-    }
-
-    public String getDisplay() {
         return this.description;
     }
 
-
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public Set<Sameness> getMatchings() {
-        return unmodifiableSet(this.matchings);
-    }
-
-    public Set<Persona> getPersonae() {
-        return unmodifiableSet(this.personae);
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public URI getUriReferenceNote() {
-        return this.uriReferenceNote;
-    }
+//    public String getDisplay() {
+//        return this.description;
+//    }
+//
+//
+//
+//    public Long getId() {
+//        return this.id;
+//    }
+//
+//    public Set<Sameness> getMatchings() {
+//        return unmodifiableSet(this.matchings);
+//    }
+//
+//    public Set<Persona> getPersonae() {
+//        return unmodifiableSet(this.personae);
+//    }
+//
+//    public String getDescription() {
+//        return this.description;
+//    }
+//
+//    public URI getUriReferenceNote() {
+//        return this.uriReferenceNote;
+//    }
 }

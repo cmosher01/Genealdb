@@ -1,71 +1,68 @@
 package nu.mine.mosher.genealdb.model.entity.conclude;
 
-import nu.mine.mosher.genealdb.model.entity.source.Citation;
-import org.neo4j.ogm.annotation.Relationship;
+import nu.mine.mosher.genealdb.model.entity.source.PersonaCites;
+import nu.mine.mosher.graph.datawebapp.util.GraphEntity;
+import org.neo4j.ogm.annotation.*;
 
+import java.io.Serializable;
 import java.util.*;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-import static java.util.Collections.unmodifiableSet;
+@NodeEntity(label=Sameness.TYPE)
+public class Sameness extends GraphEntity implements Serializable {
+    public static final String TYPE = "Sameness";
 
-public class Sameness {
-    @Relationship(type = "IS")
-    private Set<Is> are = new HashSet<>();
-    private Citation cites;
+    @Property public String rationale;
+    @Property public String notes;
 
-    private String rationale;
-    private String notes;
+    @Relationship(type=Is.TYPE) public Set<Is> are = new HashSet<>();
+    @Relationship(type= PersonaCites.TYPE) public Set<PersonaCites> cites;
 
-    @SuppressWarnings("unused")
-    private Long id;
-
-
-
-    @SuppressWarnings("unused")
-    public Sameness() {
-    }
-
-    public Sameness(final Citation cites, final String rationale, final String notes) {
-        this.cites = Objects.requireNonNull(cites);
-        this.cites.addLink(this);
-        this.rationale = Objects.requireNonNull(rationale);
-        this.notes = Objects.requireNonNull(notes);
-    }
-
-    void addLink(final Is is) {
-        this.are.add(Objects.requireNonNull(is));
-    }
+//    @SuppressWarnings("unused")
+//    private Long id;
+//
+//
+//
+//    @SuppressWarnings("unused")
+//    public Sameness() {
+//    }
+//
+//    public Sameness(final Citation cites, final String rationale, final String notes) {
+//        this.cites = Objects.requireNonNull(cites);
+//        this.cites.addLink(this);
+//        this.rationale = Objects.requireNonNull(rationale);
+//        this.notes = Objects.requireNonNull(notes);
+//    }
+//
+//    void addLink(final Is is) {
+//        this.are.add(Objects.requireNonNull(is));
+//    }
 
 
 
     @Override
     public String toString() {
-        return toStringHelper(this)
-            .omitNullValues()
-            .add("rationale", this.rationale)
-            .add("notes", this.notes)
-            .toString();
-    }
-
-
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public Set<Is> getAre() {
-        return unmodifiableSet(this.are);
-    }
-
-    public Citation getCites() {
-        return this.cites;
-    }
-
-    public String getRationale() {
         return this.rationale;
     }
 
-    public String getNotes() {
-        return this.notes;
-    }
+
+
+//    public Long getId() {
+//        return this.id;
+//    }
+//
+//    public Set<Is> getAre() {
+//        return unmodifiableSet(this.are);
+//    }
+//
+//    public Citation getCites() {
+//        return this.cites;
+//    }
+//
+//    public String getRationale() {
+//        return this.rationale;
+//    }
+//
+//    public String getNotes() {
+//        return this.notes;
+//    }
 }

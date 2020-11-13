@@ -1,24 +1,27 @@
+plugins {
+    id 'application'
+}
+
 repositories {
     jcenter()
     mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
 }
 
-apply plugin: 'application'
-
 dependencies {
-    implementation group: 'org.nanohttpd', name: 'nanohttpd', version: 'latest.integration'
-    implementation group: 'org.antlr', name: 'ST4', version: 'latest.release'
+    implementation group: 'nu.mine.mosher.graph', name: 'graph-data-web', version: 'latest.integration', {
+        exclude group:'org.slf4j', module: 'slf4j-simple'
+    }
+//    implementation group: 'org.nanohttpd', name: 'nanohttpd', version: 'latest.integration'
+//    implementation group: 'org.antlr', name: 'ST4', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j', version: 'latest.release'
-    implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
+//    implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
     implementation group: 'com.google.openlocationcode', name: 'openlocationcode', version: 'latest.release'
     implementation group: 'org.threeten', name: 'threeten-extra', version: 'latest.release'
 
     implementation group: 'org.neo4j', name: 'neo4j-ogm-core', version: 'latest.release'
     implementation group: 'org.neo4j', name: 'neo4j-ogm-bolt-driver', version: 'latest.release'
+    implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: 'latest.release'
 
     runtimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: 'latest.release'
 
@@ -39,7 +42,33 @@ test {
     }
 }
 
-group = 'nu.mine.mosher.gedcom'
-mainClassName = 'nu.mine.mosher.genealdb.Genealdb'
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-version = '1.0.0'
+group = 'nu.mine.mosher.genealogy'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_15
+}
+
+compileJava {
+    options.compilerArgs << '-parameters'
+    options.compilerArgs << "--enable-preview"
+}
+
+compileTestJava {
+    options.compilerArgs << '-parameters'
+    options.compilerArgs << "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+application {
+//    mainClass.set 'nu.mine.mosher.genealogy.prove.Test'
+    mainClass.set 'nu.mine.mosher.genealdb.Genealdb'
+}
+
+version = '2.0.0'

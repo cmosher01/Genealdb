@@ -1,20 +1,18 @@
 package nu.mine.mosher.genealdb.model.type;
 
-import com.google.common.base.Strings;
-
+import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.chrono.*;
 import java.time.format.*;
 import java.time.temporal.*;
 import java.util.*;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
 import static java.util.Comparator.comparing;
 
 /**
  * A day (date), with a degree of precision (year, month, day), and possibly a "circa".
  */
-public class Day implements Comparable<Day> {
+public class Day implements Serializable, Comparable<Day> {
     public static final Chronology DEFAULT_CHRONOLOGY = Chronology.ofLocale(Locale.getDefault());
 
 
@@ -174,9 +172,7 @@ public class Day implements Comparable<Day> {
 
     @Override
     public String toString() {
-        return toStringHelper(this)
-            .addValue(getDisplayWithFullDate())
-            .toString();
+        return getDisplayWithFullDate();
     }
 
     @Override
@@ -294,6 +290,6 @@ public class Day implements Comparable<Day> {
     }
 
     private static String unknownField(final int width) {
-        return Strings.repeat(Character.toString(UNKNOWN_INDICATOR), width);
+        return String.valueOf(UNKNOWN_INDICATOR).repeat(width);
     }
 }
