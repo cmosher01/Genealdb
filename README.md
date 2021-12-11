@@ -14,8 +14,8 @@ are given as the schema
 See also [Graph-Data-Web](https://github.com/cmosher01/digred/blob/main/example/cmosher01/Graph-Data-Web),
 which was another attempt at a genericized version, also now deprecated and archived.
 
-The overall Genealogical Research Database System, presented below, is
-still accurate, as of this writing.
+The overall Genealogical Research Database System, and Graph database schema,
+presented below, are still accurate, as of this writing (2021).
 
 # GenealDB
 
@@ -31,27 +31,33 @@ Copyright © 1998–2020, by Christopher Alan Mosher, Shelton, Connecticut, USA,
 
 ![image](./system.svg)
 
-1. Images \
+1. **Images** \
    photographs, facsimiles \
    [IIPImage](https://iipimage.sourceforge.io/)
-1. Sources \
+2. **Sources** \
    TEI format: transcripts, citations \
-   [Tei-Server](https://github.com/cmosher01/Tei-Server)
+   [Tei-Server](https://github.com/cmosher01/Tei-Server)* \
    [Evidence Explained](http://www.worldcat.org/oclc/1054383552)
-1. GIS database \
-   geographic areas (of places) \
+3. **GIS database** (places) \
+   geographic areas \
    [TerraLib](http://www.terralib.org/)
-1. Genealogical data storage (graph database) \
+4. **Genealogical data storage** (graph database) \
    extractions (personae, events), conclusions, historical places \
    [Neo4j](https://neo4j.com/)
-1. Universal access \
+5. **Universal access** (web browser presentation) \
    unicode fonts and stylesheets \
-   [PlainWebCss](https://github.com/cmosher01/PlainWebCss)
-1. GenealDB web server \
-   browser-based user interface for Genealogical data storage
+   [PlainWebCss](https://github.com/cmosher01/PlainWebCss)*
+6. **Data management** (CRUD) \
+   all data entry, modification, and administration \
+   [digred](https://www.github.com/cmosher01/digred)* [prototype]
 
-## GenealDB
+&ast;These components are designed, developed, copyright, and owned
+by [Christopher Alan Mosher](https://github.com/cmosher01), Shelton, Connecticut, USA, cmosher01@gmail.com .
+
+## Graph database schema
 
 ![image](./model.svg)
 
-This is designed to be a replacement for [GEDCOM](https://www.familysearch.org/wiki/en/GEDCOM).
+This schema represents is a complete generic redesign of
+(and therefore also a replacement for)
+the standard [GEDCOM](https://www.familysearch.org/wiki/en/GEDCOM) model.
