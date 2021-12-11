@@ -1,3 +1,22 @@
+# ARCHIVED
+
+This is based on obsolete technology (namely Neo4j-OGM), and so is being archived.
+This project might have some useful source code, such as the model classes
+in [model](./src/main/java/nu/mine/mosher/genealdb/model) or
+[prove](./src/main/java/nu/mine/mosher/genealogy/prove), which are still in
+an incomplete state.
+
+This had morphed into a more generic, desktop application,
+[digred](https://www.github.com/cmosher01/digred), wherein the models here
+are given as the schema
+[genopcit.digr](https://github.com/cmosher01/digred/blob/main/example/genopcit.digr).
+
+See also [Graph-Data-Web](https://github.com/cmosher01/digred/blob/main/example/cmosher01/Graph-Data-Web),
+which was another attempt at a genericized version, also now deprecated and archived.
+
+The overall Genealogical Research Database System, presented below, is
+still accurate, as of this writing.
+
 # GenealDB
 
 Copyright © 1998–2020, by Christopher Alan Mosher, Shelton, Connecticut, USA, cmosher01@gmail.com

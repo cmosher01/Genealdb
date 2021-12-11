@@ -2,10 +2,7 @@ package nu.mine.mosher.genealogy.prove;
 
 import java.util.*;
 
-public record Persona(
-    Descriptor<Uncategorized> descriptor,
-    String name,
-    List<Is> xrefs
-)
-{
+public class Persona extends Descriptor<Uncategorized> {
+    public List<ExtractedFrom> citations = new ArrayList<>();
+    public List<Is> xrefs = new ArrayList<>();
 }

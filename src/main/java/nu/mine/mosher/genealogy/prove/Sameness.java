@@ -1,10 +1,7 @@
 package nu.mine.mosher.genealogy.prove;
 
-import java.util.List;
+import java.util.*;
 
-public record Sameness(
-    Descriptor<Uncategorized> descriptor,
-    List<Is> are
-)
-{
+public class Sameness extends Descriptor<Uncategorized> {
+    public List<Is> are = new ArrayList<>();
 }

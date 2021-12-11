@@ -3,14 +3,13 @@ plugins {
 }
 
 repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    implementation group: 'nu.mine.mosher.graph', name: 'graph-data-web', version: 'latest.integration', {
-        exclude group:'org.slf4j', module: 'slf4j-simple'
-    }
+//    implementation group: 'nu.mine.mosher.graph', name: 'graph-data-web', version: 'latest.integration', {
+//        exclude group:'org.slf4j', module: 'slf4j-simple'
+//    }
 //    implementation group: 'org.nanohttpd', name: 'nanohttpd', version: 'latest.integration'
 //    implementation group: 'org.antlr', name: 'ST4', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
@@ -45,30 +44,14 @@ test {
 group = 'nu.mine.mosher.genealogy'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_15
-}
-
-compileJava {
-    options.compilerArgs << '-parameters'
-    options.compilerArgs << "--enable-preview"
-}
-
-compileTestJava {
-    options.compilerArgs << '-parameters'
-    options.compilerArgs << "--enable-preview"
-}
-
-tasks.withType(JavaExec) {
-    jvmArgs += "--enable-preview"
-}
-
-tasks.withType(Test) {
-    jvmArgs += "--enable-preview"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of 17
+    }
 }
 
 application {
 //    mainClass.set 'nu.mine.mosher.genealogy.prove.Test'
-    mainClass.set 'nu.mine.mosher.genealdb.Genealdb'
+    mainClass = 'nu.mine.mosher.genealdb.Genealdb'
 }
 
 version = '2.0.0'
