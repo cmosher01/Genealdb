@@ -11,7 +11,7 @@ This had morphed into a more generic, desktop application,
 are given as the schema
 [genopcit.digr](https://github.com/cmosher01/digred/blob/main/example/genopcit.digr).
 
-See also [Graph-Data-Web](https://github.com/cmosher01/digred/blob/main/example/cmosher01/Graph-Data-Web),
+See also [Graph-Data-Web](https://github.com/cmosher01/Graph-Data-Web),
 which was another attempt at a genericized version, also now deprecated and archived.
 
 The overall Genealogical Research Database System, and Graph database schema,
